@@ -1,0 +1,72 @@
+/* * { */
+/*   font-family: "Cantarell", "Font Awesome 6 Free Solid"; */
+  /* font-family: "Noto Sans Mono", "Font Awesome 6 Free Solid"; */
+/* } */
+
+tooltip {
+  font-family: "JetBrainsMono NF", "Font Awesome 6 Free Solid";
+}
+
+window.bar {
+  background-color: alpha(@theme_bg_color, 0.4);
+  color: @theme_fg_color;
+}
+
+button {
+  min-width: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  background-color: transparent;
+}
+
+button:active {
+  background-color: @theme_selected_bg_color;
+}
+
+button:hover {
+  border-bottom: 3px solid @theme_fg_color;
+}
+
+label {
+  font-weight: bold;
+}
+
+.workspaces button.focused {
+  border-bottom: 3px solid @theme_selected_bg_color;
+}
+
+.client-title {
+  color: @theme_selected_bg_color;
+}
+
+.notification {
+  color: yellow;
+}
+
+.battery.charging {
+  color: @success_color;
+}
+
+.hardware,
+.traffic {
+  padding: 1px 0;
+}
+
+.cpu,
+.ram {
+  font-size: 0.75em;
+  font-family: "Noto Sans Mono", "Font Awesome 6 Free Solid";
+}
+
+.traffic .icon {
+  -gtk-icon-transform: rotate(-90deg);
+}
+
+.unit {
+  font-size: 0.7em;
+}
+
+levelbar block,
+highlight {
+  min-height: 10px;
+}
