@@ -5,14 +5,28 @@ const icon = Widget.Icon({
   icon: "emblem-synchronizing-symbolic",
 });
 
+globalThis.checkUpdates = () => {
+  icon.class_name = "rotate";
+};
+
+globalThis.refreshUpdates = () => {
+  if (updates.is_listening) {
+    updates.stopListen();
+  }
+  updates.startListen();
+};
+
 export default Widget.EventBox({
-  onPrimaryClick: () => {
-    icon.class_name = "rotate";
-    if (updates.is_listening) {
-      updates.stopListen();
-    }
-    updates.startListen();
+  onPrimaryClickRelease: () => {
+    globalThis.checkUpdates();
+    globalThis.refreshUpdates();
   },
+  onMiddleClickRelease: () =>
+    Utils.subprocess([
+      "bash",
+      "-c",
+      `$TERMINAL -e ${App.configDir}/scripts/installupdates.sh >/dev/null 2>&1`,
+    ]),
   child: Widget.Box({
     className: "updates",
     spacing: 8,
