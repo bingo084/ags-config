@@ -1,6 +1,18 @@
 import { updates } from "variables";
 
+const icon = Widget.Icon({
+  className: "rotate",
+  icon: "emblem-synchronizing-symbolic",
+});
+
 export default Widget.EventBox({
+  onPrimaryClick: () => {
+    icon.class_name = "rotate";
+    if (updates.is_listening) {
+      updates.stopListen();
+    }
+    updates.startListen();
+  },
   child: Widget.Box({
     className: "updates",
     spacing: 8,
@@ -9,6 +21,7 @@ export default Widget.EventBox({
       const maxOld = Math.max(
         ...packages.map(({ old_version }) => old_version.length),
       );
+      icon.class_name = "";
       return packages.length == 0
         ? "No updates"
         : packages
@@ -19,7 +32,7 @@ export default Widget.EventBox({
             .join("\n");
     }),
     children: [
-      Widget.Icon("emblem-synchronizing-symbolic"),
+      icon,
       Widget.Label({
         label: updates.bind().as(({ count }) => `${count}`),
       }),

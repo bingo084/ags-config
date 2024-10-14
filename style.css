@@ -66,6 +66,19 @@ label {
   font-size: 0.7em;
 }
 
+@keyframes rotateAnimation {
+  0% {
+    -gtk-icon-transform: rotate(0deg);
+  }
+  100% {
+    -gtk-icon-transform: rotate(360deg);
+  }
+}
+
+.rotate {
+  animation: rotateAnimation 1.5s linear infinite;
+}
+
 levelbar block,
 highlight {
   min-height: 10px;
