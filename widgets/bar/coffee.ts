@@ -1,15 +1,39 @@
-const hypridle = Variable(Utils.exec("pidof hypridle"));
+const refresh = () => {
+  const pid = Utils.exec("pidof hypridle");
+  const suspend = pid
+    ? !Utils.exec(["bash", "-c", `ps -p ${pid} -o cmd | grep nosuspend`])
+    : false;
+  return { pid, suspend };
+};
+const status = Variable(refresh());
 
 export default Widget.EventBox({
   className: "coffee",
-  onPrimaryClick: () => {
-    hypridle.value
-      ? Utils.exec("killall hypridle")
-      : Utils.subprocess("hypridle");
-    hypridle.value = Utils.exec("pidof hypridle");
+  onPrimaryClickRelease: () => {
+    const { pid, suspend } = status.value;
+    if (pid) {
+      Utils.exec("killall hypridle");
+      if (suspend) {
+        Utils.subprocess(
+          "bash -c 'hypridle -c ~/.config/hypr/hypridle-nosuspend.conf'",
+        );
+      }
+    } else {
+      Utils.subprocess("hypridle");
+    }
+    status.value = refresh();
   },
+  tooltipText: status
+    .bind()
+    .as(({ pid, suspend }) =>
+      pid ? (suspend ? "Auto suspend" : "No suspend") : "Always on",
+    ),
   child: Widget.Icon({
-    css: hypridle.bind().as((p) => (p ? " " : "color: red")),
+    css: status
+      .bind()
+      .as(({ pid, suspend }) =>
+        pid ? (suspend ? " " : "color: blue") : "color: red",
+      ),
     icon: "preferences-desktop-screensaver-symbolic",
   }),
 });
