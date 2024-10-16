@@ -39,10 +39,12 @@ export default Widget.EventBox({
       return packages.length == 0
         ? "No updates"
         : packages
-            .map(
-              ({ name, old_version, new_version }) =>
-                ` ${name.padEnd(maxName + 2)}<span color="red">${old_version.padEnd(maxOld + 2)}</span><span color="green">${new_version}</span>`,
-            )
+            .map(({ name, old_version, new_version, aur }) => {
+              name = `<span ${aur ? 'color="grey"' : ""}> ${name.padEnd(maxName)}</span>`;
+              old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
+              new_version = `<span color="green">${new_version}</span>`;
+              return `${name}  ${old_version}  ${new_version}`;
+            })
             .join("\n");
     }),
     children: [

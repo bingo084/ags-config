@@ -59,6 +59,7 @@ interface Updates {
     name: string;
     old_version: string;
     new_version: string;
+    aur?: boolean;
   }[];
 }
 
