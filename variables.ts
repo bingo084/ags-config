@@ -72,3 +72,7 @@ export const updates = Variable(
     ],
   },
 );
+
+export const location = Variable("", {
+  listen: App.configDir + "/scripts/location.sh",
+});
