@@ -24,11 +24,7 @@ export default Widget.EventBox({
     globalThis.refreshUpdates();
   },
   onMiddleClickRelease: () =>
-    Utils.subprocess([
-      "bash",
-      "-c",
-      `$TERMINAL -e ${App.configDir}/scripts/installupdates.sh >/dev/null 2>&1`,
-    ]),
+    Utils.subprocess(`kitty ${App.configDir}/scripts/installupdates.sh`),
   child: Widget.Box({
     className: "updates",
     spacing: 8,
