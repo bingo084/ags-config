@@ -1,3 +1,5 @@
+import Gio from "gi://Gio";
+
 interface Disk {
   size?: string;
   used?: string;
@@ -73,6 +75,30 @@ export const updates = Variable(
   },
 );
 
+interface Secret {
+  location_topic: string;
+  weather_key: string;
+}
+
+const home = Utils.exec(["bash", "-c", "echo $HOME"]);
+const filepath = home + "/.local/share/ags/.secret.json";
+const readSecret = (file?: Gio.File): Secret =>
+  JSON.parse(Utils.readFile(file ? file : filepath) || "{}");
+const sercet = Variable(readSecret());
+Utils.monitorFile(filepath, (file, event) => {
+  if (event === 0) {
+    sercet.value = readSecret(file);
+  }
+});
+
+let connectivity = "";
+const network = await Service.import("network");
+network.connect("changed", ({ connectivity: newConnectivity }) => {
+  if (newConnectivity === "full" && newConnectivity !== connectivity) {
+    connectivity = newConnectivity;
+    Utils.exec(`ntfy pub -p 1 ${sercet.value.location_topic}`);
+  }
+});
 export const location = Variable("", {
-  listen: App.configDir + "/scripts/location.sh",
+  listen: `ntfy sub ${sercet.value.location_topic} '[[ "$m" != "triggered" ]] && echo "$m"'`,
 });
