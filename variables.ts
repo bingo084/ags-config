@@ -110,7 +110,28 @@ interface Location {
   };
 }
 
-export const location = Variable({} as Location);
+interface Weather {
+  code: string;
+  updateTime: string;
+  fxLink: string;
+  now: {
+    obsTime: string;
+    temp: string;
+    feelsLike: string;
+    icon: string;
+    text: string;
+    wind360: string;
+    windDir: string;
+    windScale: string;
+    windSpeed: string;
+    humidity: string;
+    precip: string;
+    pressure: string;
+    vis: string;
+    cloud?: string;
+    dew?: string;
+  };
+}
 
 const { key, secret_key } = sercet.value.tencent_map;
 const url = "https://apis.map.qq.com";
@@ -122,5 +143,20 @@ const sig = Utils.exec([
 ]);
 Utils.fetch(`${url}${api}&sig=${sig}`)
   .then((res) => res.json())
-  .then(({ result }) => (location.value = result as Location))
+  .then((res) => res.result as Location)
+  .then(({ location }) => weatherInterval(location))
   .catch((error) => console.log(error));
+
+const weatherInterval = ({ lat, lng }) => {
+  const { weather_key } = sercet.value;
+  const url = `https://devapi.qweather.com/v7/weather/now?key=${weather_key}&location=${lng},${lat}`;
+  const refreshWeather = () =>
+    Utils.fetch(url)
+      .then((res) => res.json())
+      .then((res) => (weather.value = res as Weather))
+      .catch((error) => console.log(error));
+  refreshWeather();
+  setInterval(refreshWeather, 10 * 60 * 1000);
+};
+
+export const weather = Variable({} as Weather);
