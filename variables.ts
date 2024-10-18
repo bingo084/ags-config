@@ -76,8 +76,11 @@ export const updates = Variable(
 );
 
 interface Secret {
-  location_topic: string;
   weather_key: string;
+  tencent_map: {
+    key: string;
+    secret_key: string;
+  };
 }
 
 const home = Utils.exec(["bash", "-c", "echo $HOME"]);
@@ -91,14 +94,33 @@ Utils.monitorFile(filepath, (file, event) => {
   }
 });
 
-let connectivity = "";
-const network = await Service.import("network");
-network.connect("changed", ({ connectivity: newConnectivity }) => {
-  if (newConnectivity === "full" && newConnectivity !== connectivity) {
-    connectivity = newConnectivity;
-    Utils.exec(`ntfy pub -p 1 ${sercet.value.location_topic}`);
-  }
-});
-export const location = Variable("", {
-  listen: `ntfy sub ${sercet.value.location_topic} '[[ "$m" != "triggered" ]] && echo "$m"'`,
-});
+interface Location {
+  ip: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  ad_info: {
+    nation: string;
+    province: string;
+    city: string;
+    district: string;
+    adcode: number;
+    nation_code: number;
+  };
+}
+
+export const location = Variable({} as Location);
+
+const { key, secret_key } = sercet.value.tencent_map;
+const url = "https://apis.map.qq.com";
+const api = `/ws/location/v1/ip?key=${key}`;
+const sig = Utils.exec([
+  "bash",
+  "-c",
+  `echo -n "${api}${secret_key}" | md5sum | awk '{print $1}'`,
+]);
+Utils.fetch(`${url}${api}&sig=${sig}`)
+  .then((res) => res.json())
+  .then(({ result }) => (location.value = result as Location))
+  .catch((error) => console.log(error));
