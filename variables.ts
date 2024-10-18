@@ -1,3 +1,4 @@
+import GLib from "gi://GLib";
 import Gio from "gi://Gio";
 
 interface Disk {
@@ -83,8 +84,7 @@ interface Secret {
   };
 }
 
-const home = Utils.exec(["bash", "-c", "echo $HOME"]);
-const filepath = home + "/.local/share/ags/.secret.json";
+const filepath = GLib.get_user_data_dir() + "/ags/.secret.json";
 const readSecret = (file?: Gio.File): Secret =>
   JSON.parse(Utils.readFile(file ? file : filepath) || "{}");
 const secret = Variable(readSecret());
