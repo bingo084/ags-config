@@ -87,10 +87,10 @@ const home = Utils.exec(["bash", "-c", "echo $HOME"]);
 const filepath = home + "/.local/share/ags/.secret.json";
 const readSecret = (file?: Gio.File): Secret =>
   JSON.parse(Utils.readFile(file ? file : filepath) || "{}");
-const sercet = Variable(readSecret());
+const secret = Variable(readSecret());
 Utils.monitorFile(filepath, (file, event) => {
   if (event === 0) {
-    sercet.value = readSecret(file);
+    secret.value = readSecret(file);
   }
 });
 
@@ -133,7 +133,7 @@ interface Weather {
   };
 }
 
-const { key, secret_key } = sercet.value.tencent_map;
+const { key, secret_key } = secret.value.tencent_map;
 const url = "https://apis.map.qq.com";
 const api = `/ws/location/v1/ip?key=${key}`;
 const sig = Utils.exec([
@@ -148,7 +148,7 @@ Utils.fetch(`${url}${api}&sig=${sig}`)
   .catch((error) => console.log(error));
 
 const weatherInterval = ({ lat, lng }) => {
-  const { weather_key } = sercet.value;
+  const { weather_key } = secret.value;
   const url = `https://devapi.qweather.com/v7/weather/now?key=${weather_key}&location=${lng},${lat}`;
   const refreshWeather = () =>
     Utils.fetch(url)
