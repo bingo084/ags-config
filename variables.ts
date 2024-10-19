@@ -111,29 +111,6 @@ interface Location {
   };
 }
 
-interface Weather {
-  code: string;
-  updateTime: string;
-  fxLink: string;
-  now: {
-    obsTime: string;
-    temp: string;
-    feelsLike: string;
-    icon: string;
-    text: string;
-    wind360: string;
-    windDir: string;
-    windScale: string;
-    windSpeed: string;
-    humidity: string;
-    precip: string;
-    pressure: string;
-    vis: string;
-    cloud?: string;
-    dew?: string;
-  };
-}
-
 const { key, secret_key } = secret.value.tencent_map;
 const url = "https://apis.map.qq.com";
 const api = `/ws/location/v1/ip?key=${key}`;
@@ -158,18 +135,3 @@ network.connect("changed", ({ connectivity }) => {
 fetchLocation();
 
 export const location = Variable({} as Location);
-
-const refreshWeather = () => {
-  const { weather_key } = secret.value;
-  const { lat, lng } = location.value.location;
-  const url = `https://devapi.qweather.com/v7/weather/now?key=${weather_key}&location=${lng},${lat}`;
-  Utils.fetch(url)
-    .then((res) => res.json())
-    .then((res) => (weather.value = res as Weather))
-    .catch((error) => console.log(error));
-};
-secret.connect("changed", refreshWeather);
-location.connect("changed", refreshWeather);
-setInterval(refreshWeather, 10 * 60 * 1000);
-
-export const weather = Variable({} as Weather);
