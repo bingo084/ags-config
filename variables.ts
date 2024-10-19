@@ -147,13 +147,13 @@ const fetchLocation = () =>
     .then((res) => res.json())
     .then((res) => (location.value = res.result as Location))
     .catch((error) => console.log(error));
-let lastConnectivity = "";
 const network = await Service.import("network");
+let lastConnectivity = network.connectivity;
 network.connect("changed", ({ connectivity }) => {
-  if (connectivity === "full" && connectivity !== lastConnectivity) {
-    lastConnectivity = connectivity;
+  if (connectivity !== lastConnectivity && connectivity === "full") {
     fetchLocation();
   }
+  lastConnectivity = connectivity;
 });
 fetchLocation();
 
