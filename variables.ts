@@ -87,12 +87,13 @@ interface Secret {
 const filepath = GLib.get_user_data_dir() + "/ags/.secret.json";
 const readSecret = (file?: Gio.File): Secret =>
   JSON.parse(Utils.readFile(file ? file : filepath) || "{}");
-const secret = Variable(readSecret());
 Utils.monitorFile(filepath, (file, event) => {
   if (event === 0) {
     secret.value = readSecret(file);
   }
 });
+
+export const secret = Variable(readSecret());
 
 interface Location {
   ip: string;
@@ -141,22 +142,34 @@ const sig = Utils.exec([
   "-c",
   `echo -n "${api}${secret_key}" | md5sum | awk '{print $1}'`,
 ]);
-Utils.fetch(`${url}${api}&sig=${sig}`)
-  .then((res) => res.json())
-  .then((res) => res.result as Location)
-  .then(({ location }) => weatherInterval(location))
-  .catch((error) => console.log(error));
+const fetchLocation = () =>
+  Utils.fetch(`${url}${api}&sig=${sig}`)
+    .then((res) => res.json())
+    .then((res) => (location.value = res.result as Location))
+    .catch((error) => console.log(error));
+let lastConnectivity = "";
+const network = await Service.import("network");
+network.connect("changed", ({ connectivity }) => {
+  if (connectivity === "full" && connectivity !== lastConnectivity) {
+    lastConnectivity = connectivity;
+    fetchLocation();
+  }
+});
+fetchLocation();
 
-const weatherInterval = ({ lat, lng }) => {
+export const location = Variable({} as Location);
+
+const refreshWeather = () => {
   const { weather_key } = secret.value;
+  const { lat, lng } = location.value.location;
   const url = `https://devapi.qweather.com/v7/weather/now?key=${weather_key}&location=${lng},${lat}`;
-  const refreshWeather = () =>
-    Utils.fetch(url)
-      .then((res) => res.json())
-      .then((res) => (weather.value = res as Weather))
-      .catch((error) => console.log(error));
-  refreshWeather();
-  setInterval(refreshWeather, 10 * 60 * 1000);
+  Utils.fetch(url)
+    .then((res) => res.json())
+    .then((res) => (weather.value = res as Weather))
+    .catch((error) => console.log(error));
 };
+secret.connect("changed", refreshWeather);
+location.connect("changed", refreshWeather);
+setInterval(refreshWeather, 10 * 60 * 1000);
 
 export const weather = Variable({} as Weather);
