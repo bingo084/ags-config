@@ -22,7 +22,7 @@ interface Location {
     nation_code: number;
   };
 }
-interface Weather {
+interface RealTimeResult {
   code: string;
   updateTime: string;
   fxLink: string;
@@ -45,45 +45,143 @@ interface Weather {
   };
 }
 
-class WeatherService extends Service {
+class RealTimeWeather extends Service {
   static {
     Service.register(
       this,
       {},
       {
-        fx_link: ["string"],
-        now: ["jsobject"],
+        "fx-link": ["string"],
+        "obs-time": ["string"],
+        temp: ["string"],
+        "feels-like": ["string"],
+        icon: ["string"],
+        text: ["string"],
+        wind360: ["string"],
+        "wind-dir": ["string"],
+        "wind-scale": ["string"],
+        "wind-speed": ["string"],
+        humidity: ["string"],
+        precip: ["string"],
+        pressure: ["string"],
+        vis: ["string"],
+        cloud: ["string"],
+        dew: ["string"],
       },
     );
   }
 
   private _fxLink = "";
-  private _now = {} as Weather["now"];
+  private _obsTime = "";
+  private _temp = "";
+  private _feelsLike = "";
+  private _icon = "";
+  private _text = "";
+  private _wind360 = "";
+  private _windDir = "";
+  private _windScale = "";
+  private _windSpeed = "";
+  private _humidity = "";
+  private _precip = "";
+  private _pressure = "";
+  private _vis = "";
+  private _cloud = "";
+  private _dew = "";
 
   get fx_link() {
     return this._fxLink;
   }
 
-  get now() {
-    return this._now;
+  get obs_time() {
+    return this._obsTime;
+  }
+
+  get temp() {
+    return this._temp;
+  }
+
+  get feels_like() {
+    return this._feelsLike;
+  }
+
+  get icon() {
+    return this._icon;
+  }
+
+  get text() {
+    return this._text;
+  }
+
+  get wind360() {
+    return this._wind360;
+  }
+
+  get wind_dir() {
+    return this._windDir;
+  }
+
+  get wind_scale() {
+    return this._windScale;
+  }
+
+  get wind_speed() {
+    return this._windSpeed;
+  }
+
+  get humidity() {
+    return this._humidity;
+  }
+
+  get precip() {
+    return this._precip;
+  }
+
+  get pressure() {
+    return this._pressure;
+  }
+
+  get vis() {
+    return this._vis;
+  }
+
+  get cloud() {
+    return this._cloud;
+  }
+
+  get dew() {
+    return this._dew;
   }
 
   constructor() {
     super();
-    this.sync();
-    setInterval(() => this.sync(), 10 * 60 * 1000);
+    this.refresh();
+    setInterval(() => this.refresh(), 10 * 60 * 1000);
   }
 
-  async sync() {
+  async refresh() {
     const { weather_key, tencent_map } = this._secret();
     const location = await this._location(tencent_map);
     if (!location) return;
     const { lat, lng } = location.location;
     const url = `https://devapi.qweather.com/v7/weather/now?key=${weather_key}&location=${lng},${lat}`;
     const res = await Utils.fetch(url);
-    const weather = (await res.json()) as Weather;
-    this.updateProperty("fx_link", weather.fxLink);
-    this.updateProperty("now", weather.now);
+    const weather = (await res.json()) as RealTimeResult;
+    this.updateProperty("fx-link", weather.fxLink);
+    this.updateProperty("obs-time", weather.now.obsTime);
+    this.updateProperty("temp", weather.now.temp);
+    this.updateProperty("feels-like", weather.now.feelsLike);
+    this.updateProperty("icon", weather.now.icon);
+    this.updateProperty("text", weather.now.text);
+    this.updateProperty("wind360", weather.now.wind360);
+    this.updateProperty("wind-dir", weather.now.windDir);
+    this.updateProperty("wind-scale", weather.now.windScale);
+    this.updateProperty("wind-speed", weather.now.windSpeed);
+    this.updateProperty("humidity", weather.now.humidity);
+    this.updateProperty("precip", weather.now.precip);
+    this.updateProperty("pressure", weather.now.pressure);
+    this.updateProperty("vis", weather.now.vis);
+    this.updateProperty("cloud", weather.now.cloud);
+    this.updateProperty("dew", weather.now.dew);
     this.emit("changed");
   }
 
@@ -110,5 +208,31 @@ class WeatherService extends Service {
   }
 }
 
-export const weather = new WeatherService();
+class Weather extends Service {
+  static {
+    Service.register(
+      this,
+      {},
+      {
+        now: ["jsobject"],
+      },
+    );
+  }
+
+  now = new RealTimeWeather();
+
+  constructor() {
+    super();
+    this.now.connect("changed", () => {
+      this.notify("now");
+      this.emit("changed");
+    });
+  }
+
+  refresh() {
+    this.now.refresh();
+  }
+}
+
+export const weather = new Weather();
 export default weather;

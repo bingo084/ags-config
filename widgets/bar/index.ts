@@ -16,6 +16,7 @@ import workspaces from "./workspaces";
 import battery from "./battery";
 import clock from "./clock";
 import systray from "./systray";
+import weather from "./weather";
 
 const Left = Widget.Box({
   spacing: 8,
@@ -32,6 +33,7 @@ const Right = Widget.Box({
   spacing: 8,
   children: [
     traffic,
+    weather,
     updates,
     disk,
     hardware,
