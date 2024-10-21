@@ -1,36 +1,43 @@
-import Gio from "gi://Gio";
-
 interface Inhibit {
-  who: string;
   pid: number;
   what: string;
 }
 
 const refresh = () =>
-  Utils.exec(
-    App.configDir + "/scripts/inhibit.sh",
-    (out) => JSON.parse(out) as Inhibit[],
-  );
-const inhibits = Variable(refresh());
+  JSON.parse(
+    Utils.exec(App.configDir + "/scripts/inhibit.sh") || "{}",
+  ) as Inhibit;
 
-const idle =
-  "systemd-inhibit --what=idle --who=Ags --why='Manual Inhibit Idle' sleep infinity";
-const sleep =
-  "systemd-inhibit --what=sleep --who=Ags --why='Manual Inhibit Sleep' sleep infinity";
-let currentInhibit: Gio.Subprocess;
+const kill = () => Utils.exec(`kill ${inhibit.value.pid}`);
+
+const create = (what: string) =>
+  Utils.subprocess(
+    `systemd-inhibit --what=${what} --who=Ags --why='Manual inhibit ${what}' sleep infinity`,
+  );
+
+const inhibit = Variable(refresh());
 
 export default Widget.EventBox({
   className: "inhibit",
   onPrimaryClickRelease: () => {
-    inhibits.value = refresh();
+    if (inhibit.value.what === "idle") {
+      kill();
+    } else if (inhibit.value.what === "sleep") {
+      kill();
+      create("idle");
+    } else {
+      create("sleep");
+    }
+    Utils.exec("sleep 0.1")
+    inhibit.value = refresh();
   },
-  tooltipText: inhibits.bind().as((what) => `Inhibit ${what || "off"}`),
+  tooltipText: inhibit.bind().as(({ what }) => `Inhibit ${what || "off"}`),
   child: Widget.Icon({
-    css: inhibits
-      .bind()
-      .as((what) =>
-        what ? (what === "idle" ? "color: red" : "color: blue") : " ",
-      ),
     icon: "preferences-desktop-screensaver-symbolic",
+    css: inhibit
+      .bind()
+      .as(({ what }) =>
+        what === "idle" ? "color: red" : what === "sleep" ? "color: blue" : " ",
+      ),
   }),
 });
