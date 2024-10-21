@@ -15,7 +15,7 @@ const formatTime = (time: string) => {
 
 export default Widget.EventBox({
   onPrimaryClickRelease: () => weather.refresh(),
-  onMiddleClickRelease: () => Utils.exec(`xdg-open ${weather.now.fx_link}`),
+  onMiddleClickRelease: () => Utils.exec(`xdg-open "${weather.now.fx_link}"`),
   child: Widget.Box({
     spacing: 8,
     tooltipMarkup: weather.bind("now").as(
