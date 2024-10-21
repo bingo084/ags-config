@@ -2,7 +2,7 @@ import audio from "./audio";
 import brightness from "./brightness";
 import bluetooth from "./bluetooth";
 import clients from "./clients";
-import coffee from "./coffee";
+import inhibit from "./inhibit";
 import disk from "./disk";
 import hardware from "./hardware";
 import network from "./network";
@@ -40,7 +40,7 @@ const Right = Widget.Box({
     temp,
     network,
     bluetooth,
-    coffee,
+    inhibit,
     audio,
     brightness,
     battery,
