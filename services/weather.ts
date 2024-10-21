@@ -7,17 +7,17 @@ interface Secret {
     secret_key: string;
   };
 }
-interface Location {
+export interface Location {
   ip: string;
   location: {
     lat: number;
     lng: number;
   };
-  ad_info: {
+  ad_info?: {
     nation: string;
     province: string;
     city: string;
-    district: string;
+    district?: string;
     adcode: number;
     nation_code: number;
   };
@@ -208,7 +208,10 @@ class RealTimeWeather extends Service {
     try {
       const res = await Utils.fetch(`${url}${api}&sig=${sig}`);
       const json = await res.json();
-      return json.result as Location;
+      if (json.status == 0) {
+        return json.result as Location;
+      }
+      console.log(`定位api调用失败：${json.message}`);
     } catch (e) {
       console.log(e);
     }

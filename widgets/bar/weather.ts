@@ -1,7 +1,12 @@
-import weather from "services/weather";
+import weather, { Location } from "services/weather";
 
 App.addIcons(`${App.configDir}/assets/icons/weather`);
 
+const formatLocation = (ad_info: Location["ad_info"]) => {
+  if (!ad_info) return "";
+  const { province, city, district } = ad_info;
+  return district ? `${city}/${district}` : `${province}/${city}`;
+};
 const formatTime = (time: string) => {
   const date = new Date(time);
   const year = date.getFullYear();
@@ -20,9 +25,7 @@ export default Widget.EventBox({
     spacing: 8,
     tooltipMarkup: weather.bind("now").as(
       ({
-        location: {
-          ad_info: { city, district },
-        },
+        location: { ad_info },
         obs_time,
         temp,
         feels_like,
@@ -36,7 +39,7 @@ export default Widget.EventBox({
         vis,
         cloud,
         dew,
-      }) => `当前位置：${city}/${district}
+      }) => `当前位置：${formatLocation(ad_info)}
 观测时间：${formatTime(obs_time)}
 实时温度：${temp}°C
 体感温度：${feels_like}°C
@@ -54,7 +57,7 @@ export default Widget.EventBox({
         icon: weather.now.bind("icon"),
       }),
       Widget.Label({
-        label: weather.now.bind("temp").as((temp) => `${temp}°C`),
+        label: weather.now.bind("temp").as((temp) => (temp ? `${temp}°C` : "")),
       }),
     ],
   }),
