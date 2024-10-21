@@ -1,5 +1,3 @@
-import weather from "services/weather";
-
 interface Disk {
   size?: string;
   used?: string;
