@@ -67,6 +67,7 @@ class RealTimeWeather extends Service {
         vis: ["string"],
         cloud: ["string"],
         dew: ["string"],
+        location: ["jsobject"],
       },
     );
   }
@@ -87,6 +88,7 @@ class RealTimeWeather extends Service {
   private _vis = "";
   private _cloud = "";
   private _dew = "";
+  private _location = {} as Location;
 
   get fx_link() {
     return this._fxLink;
@@ -152,6 +154,10 @@ class RealTimeWeather extends Service {
     return this._dew;
   }
 
+  get location() {
+    return this._location;
+  }
+
   constructor() {
     super();
     this.refresh();
@@ -160,8 +166,9 @@ class RealTimeWeather extends Service {
 
   async refresh() {
     const { weather_key, tencent_map } = this._secret();
-    const location = await this._location(tencent_map);
+    const location = await this._fetchLocation(tencent_map);
     if (!location) return;
+    this.updateProperty("location", location);
     const { lat, lng } = location.location;
     const url = `https://devapi.qweather.com/v7/weather/now?key=${weather_key}&location=${lng},${lat}`;
     const res = await Utils.fetch(url);
@@ -190,7 +197,7 @@ class RealTimeWeather extends Service {
     return JSON.parse(Utils.readFile(path) || "{}") as Secret;
   }
 
-  private async _location({ key, secret_key }: Secret["tencent_map"]) {
+  private async _fetchLocation({ key, secret_key }: Secret["tencent_map"]) {
     const url = "https://apis.map.qq.com";
     const api = `/ws/location/v1/ip?key=${key}`;
     const sig = Utils.exec([

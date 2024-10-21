@@ -20,6 +20,9 @@ export default Widget.EventBox({
     spacing: 8,
     tooltipMarkup: weather.bind("now").as(
       ({
+        location: {
+          ad_info: { city, district },
+        },
         obs_time,
         temp,
         feels_like,
@@ -33,7 +36,8 @@ export default Widget.EventBox({
         vis,
         cloud,
         dew,
-      }) => `观测时间：${formatTime(obs_time)}
+      }) => `当前位置：${city}/${district}
+观测时间：${formatTime(obs_time)}
 实时温度：${temp}°C
 体感温度：${feels_like}°C
 天气状况：${text}
