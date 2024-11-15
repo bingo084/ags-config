@@ -3,18 +3,18 @@ $theme_fg_color: "@theme_fg_color";
 $theme_bg_color: "@theme_bg_color";
 
 window.Bar {
-    background: transparent;
-    color: #{$theme_bg_color};
-    font-weight: bold;
+  background: transparent;
+  color: #{$theme_bg_color};
+  font-weight: bold;
 
-    >centerbox {
-        background: #{$theme_bg_color};
-        border-radius: 10px;
-        margin: 8px;
-    }
+  >centerbox {
+    background: #{$theme_bg_color};
+    border-radius: 10px;
+    margin: 8px;
+  }
 
-    button {
-        border-radius: 8px;
-        margin: 2px;
-    }
+  button {
+    border-radius: 8px;
+    margin: 2px;
+  }
 }
