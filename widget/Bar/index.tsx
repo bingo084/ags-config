@@ -1,4 +1,5 @@
 import { App, Astal, Gdk } from "astal/gtk3";
+import Audio from "./Audio";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -13,6 +14,12 @@ export default (gdkmonitor: Gdk.Monitor) => (
     }
     application={App}
   >
-    <centerbox></centerbox>
+    <centerbox>
+      <box></box>
+      <box />
+      <box>
+        <Audio />
+      </box>
+    </centerbox>
   </window>
 );
