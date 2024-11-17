@@ -2,6 +2,7 @@ import Astal from "gi://Astal";
 import AstalWp from "gi://AstalWp";
 import { subprocess } from "astal/process";
 import { bind } from "astal/binding";
+import { Variable } from "astal";
 
 const speaker = AstalWp.get_default()?.get_audio()?.defaultSpeaker;
 
@@ -15,7 +16,7 @@ const chageVolume = (deltaY: number) => {
   speaker?.set_volume(speaker.volume + step);
 };
 
-const icon = ({ volume, mute }: AstalWp.Endpoint) => {
+const getIcon = (volume: number, mute: boolean) => {
   const icon = mute
     ? "muted"
     : (
@@ -32,17 +33,17 @@ const icon = ({ volume, mute }: AstalWp.Endpoint) => {
 
 export default () => {
   if (!speaker) return null;
+  const icon = Variable.derive(
+    [bind(speaker, "volume"), bind(speaker, "mute")],
+    getIcon,
+  );
   return (
     <eventbox
       onClickRelease={(_, { button }) => actions[button]?.()}
       onScroll={(_, { delta_y }) => chageVolume(delta_y)}
     >
       <box tooltipText={bind(speaker, "description")}>
-        <icon
-          setup={(self) =>
-            self.hook(speaker, "notify", () => (self.icon = icon(speaker)))
-          }
-        />
+        <icon icon={icon()} />
         <label
           label={bind(speaker, "volume").as(
             (volume) => ` ${Math.round(volume * 100)}%`,
