@@ -1,6 +1,7 @@
 import { App, Astal, Gdk } from "astal/gtk3";
 import Audio from "./Audio";
 import Battery from "./Battery";
+import Bluetooth from "./Bluetooth";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -19,6 +20,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
       <box></box>
       <box />
       <box>
+        <Bluetooth />
         <Audio />
         <Battery />
       </box>
