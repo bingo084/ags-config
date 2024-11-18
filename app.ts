@@ -1,6 +1,7 @@
 import { App, Gdk, Gtk } from "astal/gtk3";
 import style from "./style.scss";
 import Bar from "./widget/Bar";
+import Calendar from "./widget/Calendar";
 
 App.start({
   css: style,
@@ -19,5 +20,7 @@ App.start({
       bars.get(gdkmonitor)?.destroy();
       bars.delete(gdkmonitor);
     });
+
+    Calendar();
   },
 });

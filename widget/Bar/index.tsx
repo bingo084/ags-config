@@ -4,6 +4,7 @@ import Battery from "./Battery";
 import Bluetooth from "./Bluetooth";
 import Brightness from "./Brightness";
 import Clients from "./Clients";
+import Clock from "./Clock";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -28,6 +29,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Audio />
         <Brightness />
         <Battery />
+        <Clock />
       </box>
     </centerbox>
   </window>
