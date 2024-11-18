@@ -16,6 +16,9 @@ const actions = {
     dispatch("closewindow", address),
 };
 
+const trans = (clazz: string) =>
+  clazz === "org.telegram.desktop" ? "telegram" : clazz;
+
 export default () => (
   <box>
     {bind(hyprland, "clients").as((clients) =>
@@ -26,14 +29,16 @@ export default () => (
         )
         .map(({ address, class: clazz, title }) => (
           <button
-            className={bind(hyprland.focusedClient, "address").as((a) =>
-              a === address ? "focused" : "",
+            className={bind(hyprland, "focusedClient").as((c) =>
+              c.address === address ? "focused" : "",
             )}
             onClickRelease={(_, { button }) => actions[button]?.(address)}
             tooltipText={title}
           >
             <icon
-              icon={app.fuzzy_query(clazz)[0]?.iconName || "image-missing"}
+              icon={
+                app.fuzzy_query(trans(clazz))[0]?.iconName || "image-missing"
+              }
             />
           </button>
         )),
