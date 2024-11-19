@@ -9,6 +9,7 @@ import Hardware from "./Hardware";
 import Inhibit from "./Inhibit";
 import Network from "./Network";
 import Power from "./Power";
+import Search from "./Search";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -26,6 +27,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
     <centerbox>
       <box>
         <Power />
+        <Search />
         <Clients />
       </box>
       <box />
