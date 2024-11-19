@@ -1,7 +1,6 @@
 import Astal from "gi://Astal";
 import AstalWp from "gi://AstalWp";
-import { subprocess } from "astal/process";
-import { bind } from "astal/binding";
+import { bind, subprocess } from "astal";
 
 const speaker = AstalWp.get_default()?.audio.defaultSpeaker!;
 
