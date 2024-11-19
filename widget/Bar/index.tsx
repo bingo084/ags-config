@@ -29,7 +29,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
     application={App}
   >
     <centerbox>
-      <box>
+      <box className="left">
         <Power />
         <Search />
         <Clients />
@@ -37,7 +37,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Title />
       </box>
       <box />
-      <box halign={Gtk.Align.END} spacing={8}>
+      <box className="right" halign={Gtk.Align.END} spacing={8}>
         <Traffic />
         <Hardware />
         <Network />
