@@ -10,6 +10,7 @@ import Inhibit from "./Inhibit";
 import Network from "./Network";
 import Power from "./Power";
 import Search from "./Search";
+import Submap from "./Submap";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -29,6 +30,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Power />
         <Search />
         <Clients />
+        <Submap />
       </box>
       <box />
       <box halign={Gtk.Align.END} spacing={8}>
