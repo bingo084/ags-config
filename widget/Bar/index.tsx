@@ -7,6 +7,7 @@ import Clients from "./Clients";
 import Clock from "./Clock";
 import Hardware from "./Hardware";
 import Inhibit from "./Inhibit";
+import Network from "./Network";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -28,6 +29,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
       <box />
       <box>
         <Hardware />
+        <Network />
         <Bluetooth />
         <Inhibit />
         <Audio />
