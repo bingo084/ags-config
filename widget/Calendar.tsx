@@ -1,4 +1,4 @@
-import { App, Astal, astalify, ConstructProps, Gtk } from "astal/gtk3";
+import { App, Astal, astalify, ConstructProps, Gdk, Gtk } from "astal/gtk3";
 import GObject from "gi://GObject";
 
 class Calendar extends astalify(Gtk.Calendar) {
@@ -20,7 +20,7 @@ export default () => (
     visible={false}
     keymode={Astal.Keymode.EXCLUSIVE}
     onKeyReleaseEvent={(_, event) =>
-      event.get_keyval()[1] == 65307 && App.toggle_window("calendar")
+      event.get_keyval()[1] == Gdk.KEY_Escape && App.toggle_window("calendar")
     }
     application={App}
   >
