@@ -12,6 +12,7 @@ import Power from "./Power";
 import Search from "./Search";
 import Submap from "./Submap";
 import Systray from "./Systray";
+import Title from "./Title";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -32,6 +33,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Search />
         <Clients />
         <Submap />
+        <Title />
       </box>
       <box />
       <box halign={Gtk.Align.END} spacing={8}>
