@@ -1,4 +1,4 @@
-import { App, Astal, Gdk } from "astal/gtk3";
+import { App, Astal, Gdk, Gtk } from "astal/gtk3";
 import Audio from "./Audio";
 import Battery from "./Battery";
 import Bluetooth from "./Bluetooth";
@@ -27,7 +27,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Clients />
       </box>
       <box />
-      <box>
+      <box halign={Gtk.Align.END} spacing={8}>
         <Hardware />
         <Network />
         <Bluetooth />
