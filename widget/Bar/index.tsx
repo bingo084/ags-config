@@ -8,6 +8,7 @@ import Clock from "./Clock";
 import Hardware from "./Hardware";
 import Inhibit from "./Inhibit";
 import Network from "./Network";
+import Power from "./Power";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -24,6 +25,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
   >
     <centerbox>
       <box>
+        <Power />
         <Clients />
       </box>
       <box />
