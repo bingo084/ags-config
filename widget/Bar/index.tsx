@@ -11,6 +11,7 @@ import Network from "./Network";
 import Power from "./Power";
 import Search from "./Search";
 import Submap from "./Submap";
+import Systray from "./Systray";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -42,6 +43,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Brightness />
         <Battery />
         <Clock />
+        <Systray />
       </box>
     </centerbox>
   </window>
