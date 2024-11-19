@@ -28,7 +28,7 @@ export default () => (
     visible={bind(battery, "isPresent")}
     tooltipText={toolTip()}
   >
-    <icon icon={bind(battery, "iconName")} />
+    <icon icon={bind(battery, "batteryIconName")} />
     <label
       label={bind(battery, "percentage").as((p) => ` ${(p * 100).toFixed(0)}%`)}
     />
