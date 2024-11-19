@@ -13,6 +13,7 @@ import Search from "./Search";
 import Submap from "./Submap";
 import Systray from "./Systray";
 import Title from "./Title";
+import Traffic from "./Traffic";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -37,6 +38,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
       </box>
       <box />
       <box halign={Gtk.Align.END} spacing={8}>
+        <Traffic />
         <Hardware />
         <Network />
         <Bluetooth />
