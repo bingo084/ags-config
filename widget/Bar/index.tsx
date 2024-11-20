@@ -15,6 +15,7 @@ import Systray from "./Systray";
 import Title from "./Title";
 import Traffic from "./Traffic";
 import Updates from "./Updates";
+import Weather from "./Weather";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -40,6 +41,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
       <box />
       <box className="right" halign={Gtk.Align.END} spacing={8}>
         <Traffic />
+        <Weather />
         <Updates />
         <Hardware />
         <Network />
