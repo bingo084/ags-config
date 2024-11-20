@@ -23,4 +23,7 @@ App.start({
 
     Calendar();
   },
+  requestHandler(js, res) {
+    App.eval(js).then(res).catch(res);
+  },
 });
