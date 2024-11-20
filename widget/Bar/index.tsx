@@ -16,6 +16,7 @@ import Title from "./Title";
 import Traffic from "./Traffic";
 import Updates from "./Updates";
 import Weather from "./Weather";
+import Workspaces from "./Workspaces";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
@@ -34,6 +35,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
       <box className="left">
         <Power />
         <Search />
+        <Workspaces />
         <Clients />
         <Submap />
         <Title />
