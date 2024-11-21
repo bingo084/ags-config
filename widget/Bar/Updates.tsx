@@ -30,7 +30,7 @@ const updates = Variable({ count: 0, packages: [] } as Updates).poll(
 const className = Variable("spin");
 
 const refresh = () => (
-  spin(), updates.isWatching() && updates.stopWatch(), updates.startWatch()
+  spin(), updates.isPolling() && updates.stopPoll(), updates.startPoll()
 );
 const spin = () => className.set("spin");
 Object.assign(globalThis, { updates: { spin, refresh } });
