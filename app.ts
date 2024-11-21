@@ -1,10 +1,10 @@
 import { App, Gdk, Gtk } from "astal/gtk3";
-import style from "./style.scss";
 import Bar from "./widget/Bar";
 import Calendar from "./widget/Calendar";
+import { monitorFile } from "astal/file";
 
 App.start({
-  css: style,
+  css: "./style.scss",
   main() {
     const bars = new Map<Gdk.Monitor, Gtk.Widget>();
 
@@ -27,3 +27,5 @@ App.start({
     App.eval(js).then(res).catch(res);
   },
 });
+
+monitorFile(`./style.scss`, () => App.apply_css("./style.scss", true));
