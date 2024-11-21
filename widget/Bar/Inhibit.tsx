@@ -1,4 +1,4 @@
-import { exec, GLib, subprocess, Variable } from "astal";
+import { exec, subprocess, Variable } from "astal";
 import Astal from "gi://Astal";
 
 interface Inhibit {
@@ -6,9 +6,8 @@ interface Inhibit {
   what?: string;
 }
 
-const configDir = GLib.get_user_config_dir() + "/ags";
 const refresh = () =>
-  JSON.parse(exec(`${configDir}/script/inhibit.sh`) || "{}") as Inhibit;
+  JSON.parse(exec("./script/inhibit.sh") || "{}") as Inhibit;
 const kill = () => exec(`kill ${inhibit.get().pid}`);
 const create = (what: string) =>
   subprocess(

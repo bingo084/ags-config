@@ -1,11 +1,10 @@
 import { App, Astal } from "astal/gtk3";
 import Weather, { Location } from "../../lib/weather";
-import { bind, exec, GLib } from "astal";
+import { bind, exec } from "astal";
 
 const weather = Weather.get_default();
 
-const configDir = GLib.get_user_config_dir() + "/ags";
-App.add_icons(`${configDir}/asset/icon/weather`);
+App.add_icons("./asset/icon/weather");
 
 const formatLocation = (ad_info: Location["ad_info"]) => {
   if (!ad_info) return "";

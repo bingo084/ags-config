@@ -1,4 +1,4 @@
-import { GLib, Variable } from "astal";
+import { Variable } from "astal";
 
 const format = (bps: number) => {
   const units = ["B", "KB", "MB", "GB", "TB"];
@@ -19,13 +19,12 @@ const getIcon = (rx: number, tx: number) => {
   return tx > rx ? "network-transmit-symbolic" : "network-receive-symbolic";
 };
 
-const configDir = GLib.get_user_config_dir() + "/ags";
 const traffic = Variable({
   icon: "network-idle-symbolic",
   value: 0,
   unit: "",
   visible: false,
-}).watch(`${configDir}/script/traffic.sh 2`, (out) => {
+}).watch("./script/traffic.sh 2", (out) => {
   const { rx_bps, tx_bps } = JSON.parse(out);
   const maxBps = Math.max(tx_bps, rx_bps);
   return {

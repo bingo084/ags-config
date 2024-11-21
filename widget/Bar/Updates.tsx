@@ -1,4 +1,4 @@
-import { GLib, subprocess, Variable } from "astal";
+import { subprocess, Variable } from "astal";
 import Astal from "gi://Astal";
 
 interface Updates {
@@ -16,17 +16,15 @@ const important_pkgs = ["linux", "nvidia-open-dkms", "mesa"];
 const level = (v: number, l1: number, l2: number, l3: number) =>
   v < l1 ? "" : v < l2 ? "updatable" : v < l3 ? "warning" : "critical";
 
-const configDir = GLib.get_user_config_dir() + "/ags";
-
 const actions = {
   [Astal.MouseButton.PRIMARY]: () => refresh(),
   [Astal.MouseButton.MIDDLE]: () =>
-    subprocess(`kitty ${configDir}/script/installupdates.sh`),
+    subprocess("kitty ./script/installupdates.sh"),
 };
 
 const updates = Variable({ count: 0, packages: [] } as Updates).poll(
   60 * 60 * 1000,
-  `${configDir}/script/updates.sh`,
+  "./script/updates.sh",
   (out) => (className.set(""), JSON.parse(out)),
 );
 const className = Variable("spin");

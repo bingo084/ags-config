@@ -1,15 +1,14 @@
-import { GLib, GObject, subprocess, Variable } from "astal";
+import { GObject, subprocess, Variable } from "astal";
 import { Astal, astalify, ConstructProps, Gtk } from "astal/gtk3";
 
 const level = (v: number, l1: number, l2: number) =>
   v < l1 ? "" : v < l2 ? "warning" : "critical";
 
-const configDir = GLib.get_user_config_dir() + "/ags";
-const cpu = Variable(0).poll(2000, `${configDir}/script/cpu.sh`, parseFloat);
-const ram = Variable(0).poll(2000, `${configDir}/script/ram.sh`, parseFloat);
+const cpu = Variable(0).poll(2000, "./script/cpu.sh", parseFloat);
+const ram = Variable(0).poll(2000, "./script/ram.sh", parseFloat);
 const temp = Variable({ cpu: 0, gpu: 0 }).poll(
   2000,
-  `${configDir}/script/temp.sh`,
+  "./script/temp.sh",
   (out) => JSON.parse(out),
 );
 const disk = Variable({
@@ -18,7 +17,7 @@ const disk = Variable({
   avail: "0G",
   use: "0%",
   mount_on: "?",
-}).poll(2000, `${configDir}/script/disk.sh`, (out) => JSON.parse(out));
+}).poll(2000, "./script/disk.sh", (out) => JSON.parse(out));
 
 const actions = {
   [Astal.MouseButton.MIDDLE]: () => subprocess("missioncenter"),
