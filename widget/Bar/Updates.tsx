@@ -16,14 +16,14 @@ const important_pkgs = ["linux", "nvidia-open-dkms", "mesa"];
 const level = (v: number, l1: number, l2: number, l3: number) =>
   v < l1 ? "" : v < l2 ? "updatable" : v < l3 ? "warning" : "critical";
 
+const configDir = GLib.get_user_config_dir() + "/ags";
+
 const actions = {
   [Astal.MouseButton.PRIMARY]: () => refresh(),
-  [Astal.MouseButton.MIDDLE]: () =>
-    subprocess(`${terminal} ${configDir}/script/installupdates.sh`),
+  [Astal.MouseButton.MIDDLE]: () => (
+    subprocess(`kitty ${configDir}/script/installupdates.sh`)
+  ),
 };
-
-const configDir = GLib.get_user_config_dir() + "/ags";
-const terminal = GLib.getenv("TERMINAL");
 
 const updates = Variable({ count: 0, packages: [] } as Updates).watch(
   `${configDir}/script/updates.sh`,
