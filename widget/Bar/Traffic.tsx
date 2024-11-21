@@ -36,7 +36,11 @@ const traffic = Variable({
 });
 
 export default () => (
-  <box className="traffic" visible={traffic(({ visible }) => visible)}>
+  <box
+    className="traffic"
+    visible={traffic(({ visible }) => visible)}
+    onDestroy={() => traffic.drop()}
+  >
     <icon className="icon" icon={traffic(({ icon }) => icon)} />
     <label label={traffic(({ value }) => ` ${value}`)} />
     <label className="unit" label={traffic(({ unit }) => ` ${unit}`)} />

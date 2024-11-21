@@ -5,10 +5,11 @@ const level = (v: number, l1: number, l2: number) =>
   v < l1 ? "" : v < l2 ? "warning" : "critical";
 
 const configDir = GLib.get_user_config_dir() + "/ags";
-const cpu = Variable(0).watch(`${configDir}/script/cpu.sh 2`, parseFloat);
-const ram = Variable(0).watch(`${configDir}/script/ram.sh 2`, parseFloat);
-const temp = Variable({ cpu: 0, gpu: 0 }).watch(
-  `${configDir}/script/temp.sh 2`,
+const cpu = Variable(0).poll(2000, `${configDir}/script/cpu.sh`, parseFloat);
+const ram = Variable(0).poll(2000, `${configDir}/script/ram.sh`, parseFloat);
+const temp = Variable({ cpu: 0, gpu: 0 }).poll(
+  2000,
+  `${configDir}/script/temp.sh`,
   (out) => JSON.parse(out),
 );
 const disk = Variable({
@@ -17,7 +18,7 @@ const disk = Variable({
   avail: "0G",
   use: "0%",
   mount_on: "?",
-}).watch(`${configDir}/script/disk.sh 2`, (out) => JSON.parse(out));
+}).poll(2000, `${configDir}/script/disk.sh`, (out) => JSON.parse(out));
 
 const actions = {
   [Astal.MouseButton.MIDDLE]: () => subprocess("missioncenter"),
@@ -45,6 +46,7 @@ export default () => (
  TEMP: ${temp.cpu}°C(CPU) / ${temp.gpu}°C(GPU)
  DISK: ${used} used out of ${size} on ${mount_on} (${use})`,
     )()}
+    onDestroy={() => (cpu.drop(), ram.drop(), temp.drop(), disk.drop())}
   >
     <box spacing={8}>
       <icon icon="preferences-desktop-display-symbolic" />

@@ -20,12 +20,12 @@ const configDir = GLib.get_user_config_dir() + "/ags";
 
 const actions = {
   [Astal.MouseButton.PRIMARY]: () => refresh(),
-  [Astal.MouseButton.MIDDLE]: () => (
-    subprocess(`kitty ${configDir}/script/installupdates.sh`)
-  ),
+  [Astal.MouseButton.MIDDLE]: () =>
+    subprocess(`kitty ${configDir}/script/installupdates.sh`),
 };
 
-const updates = Variable({ count: 0, packages: [] } as Updates).watch(
+const updates = Variable({ count: 0, packages: [] } as Updates).poll(
+  60 * 60 * 1000,
   `${configDir}/script/updates.sh`,
   (out) => (className.set(""), JSON.parse(out)),
 );
@@ -38,7 +38,10 @@ const spin = () => className.set("spin");
 Object.assign(globalThis, { updates: { spin, refresh } });
 
 export default () => (
-  <eventbox onClickRelease={(_, { button }) => actions[button]?.()}>
+  <eventbox
+    onClickRelease={(_, { button }) => actions[button]?.()}
+    onDestroy={() => (updates.drop(), className.drop())}
+  >
     <box
       className={updates(({ count }) => level(count, 1, 25, 50))}
       spacing={8}
