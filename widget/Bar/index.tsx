@@ -20,7 +20,6 @@ import Workspaces from "./Workspaces";
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
-    name={`bar-${gdkmonitor.display.get_n_monitors()}`}
     className="bar"
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
@@ -32,7 +31,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
     application={App}
   >
     <centerbox>
-      <box className="left">
+      <box>
         <Power />
         <Search />
         <Workspaces />
@@ -41,7 +40,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Title />
       </box>
       <box />
-      <box className="right" halign={Gtk.Align.END} spacing={8}>
+      <box halign={Gtk.Align.END} spacing={8}>
         <Traffic />
         <Weather />
         <Updates />

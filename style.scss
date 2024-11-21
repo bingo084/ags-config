@@ -1,20 +1,218 @@
-// https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/theme/Adwaita/_colors-public.scss
-$theme_fg_color: "@theme_fg_color";
-$theme_bg_color: "@theme_bg_color";
+$font-family: "JetBrainsMono NF", "Font Awesome 6 Free Solid";
+$fg_color: rgb(32, 32, 32);
+$bg_color: rgba(255, 255, 255, 0.5);
+$shadow_color: rgba(0, 0, 0, 0.1);
+$border_radius: 5px;
+$theme_color: rgb(0, 122, 255);
+$success_color: rgb(40, 205, 65);
+$warning_color: rgb(255, 204, 0);
+$warning_color2: rgb(255, 149, 0);
+$critical_color: rgb(255, 59, 48);
 
-window.Bar {
-  background: transparent;
-  color: #{$theme_bg_color};
-  font-weight: bold;
+* {
+  all: unset;
+  font-weight: 500;
+}
 
-  >centerbox {
-    background: #{$theme_bg_color};
-    border-radius: 10px;
-    margin: 8px;
+tooltip {
+  font-family: $font-family;
+  background-color: $bg_color;
+  color: $fg_color;
+  border-radius: $border_radius;
+  border: 1px solid $shadow_color;
+
+  label {
+    padding: 1px 5px;
+  }
+}
+
+menu {
+  background-color: $bg_color;
+  border-radius: $border_radius;
+  border: 1px solid $shadow_color;
+  padding: 5px;
+
+  separator {
+    background-color: $shadow_color;
+    min-height: 1px;
+    margin: 3px 0;
   }
 
-  button {
-    border-radius: 8px;
-    margin: 2px;
+  menuitem {
+    padding: 3px 10px;
+    border-radius: $border_radius;
+    color: $fg_color;
+    border: 1px solid transparent;
+
+    &:hover {
+      background-color: rgba($theme_color, 0.7);
+      color: rgba($bg_color, 1);
+      border: 1px solid rgba($theme_color, 0.9);
+    }
+
+    &:disabled {
+      color: rgba($fg_color, 0.4);
+    }
+
+    arrow {
+      min-height: 1em;
+      min-width: 1em;
+
+      &:dir(ltr) {
+        -gtk-icon-source: -gtk-icontheme("go-next-symbolic");
+      }
+
+      &:dir(rtl) {
+        -gtk-icon-source: -gtk-icontheme("go-next-rtl-symbolic");
+      }
+    }
+  }
+}
+
+window.bar {
+  background-color: rgba($bg_color, 0.3);
+  color: $fg_color;
+
+  >centerbox {
+    > :first-child {
+      margin-left: 3px;
+    }
+
+    > :last-child {
+      margin-right: 2px;
+    }
+  }
+}
+
+button {
+  min-width: 26px;
+  min-height: 25px;
+  margin: 3px 1px 3px 0;
+  border-radius: $border_radius;
+  border: 2px solid transparent;
+  background-color: transparent;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: rgba($bg_color, 0.4);
+    box-shadow: 0 2px 8px $shadow_color;
+  }
+
+  &:active {
+    background-color: rgba($bg_color, 0.3);
+    box-shadow: 0 2px 2px $shadow_color;
+  }
+
+  &.focused {
+    background-color: rgba($bg_color, 0.3);
+    box-shadow: 0 2px 2px $shadow_color;
+    color: $theme_color;
+  }
+
+  &.fullscreen {
+    border-color: $theme_color;
+  }
+}
+
+.title {
+  margin: 0 7px;
+}
+
+.battery {
+  &.charging {
+    color: $success_color;
+  }
+
+  &.warning {
+    color: $warning_color;
+  }
+}
+
+.updatable {
+  color: $theme_color;
+}
+
+.traffic {
+  .icon {
+    -gtk-icon-transform: rotate(-90deg);
+  }
+
+  .unit {
+    font-size: 0.7em;
+  }
+}
+
+@keyframes spin {
+  to {
+    -gtk-icon-transform: rotate(1turn);
+  }
+}
+
+.rotate {
+  animation: spin 1.3s linear infinite;
+}
+
+trough {
+  min-height: 3px;
+  min-width: 60px;
+  background-color: rgba($fg_color, 0.1);
+  border-radius: 5px;
+
+  progress {
+    border-radius: 5px;
+    min-height: 2px;
+    background-color: rgba($fg_color, 0.9);
+
+    &.left {
+      margin: 0;
+    }
+  }
+}
+
+progressbar:not(:last-child) trough {
+  margin-bottom: 1px;
+}
+
+progressbar.warning trough progress {
+  background-color: rgba($warning_color2, 0.9);
+}
+
+progressbar.critical trough progress {
+  background-color: rgba($critical_color, 0.9);
+}
+
+calendar {
+  background-color: $bg_color;
+  color: $fg_color;
+  border-radius: 5px;
+  border: 1px solid $shadow_color;
+  padding: 4px 6px;
+
+  &:selected {
+    background-color: rgba($theme_color, 0.7);
+    color: rgba($bg_color, 1);
+    border: 1px solid rgba($theme_color, 0.9);
+  }
+
+  &:disabled {
+    color: rgba($fg_color, 0.4);
+  }
+
+  &.header,
+  &.button,
+  &.highlight {
+    background-color: transparent;
+    border: none;
+  }
+
+  &.button:hover {
+    background-color: rgba($bg_color, 0.4);
+  }
+
+  &:indeterminate {
+    color: rgba($fg_color, 0.4);
   }
 }
