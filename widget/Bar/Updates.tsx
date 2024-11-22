@@ -37,6 +37,7 @@ Object.assign(globalThis, { updates: { spin, refresh } });
 
 export default () => (
   <eventbox
+    visible={updates(({ count }) => count > 0)}
     onClickRelease={(_, { button }) => actions[button]?.()}
     onDestroy={() => (updates.drop(), className.drop())}
   >
