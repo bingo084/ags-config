@@ -135,6 +135,14 @@ button {
   color: $theme_color;
 }
 
+.warning {
+  color: $warning_color2;
+}
+
+.critical {
+  color: $critical_color;
+}
+
 .traffic {
   .icon {
     -gtk-icon-transform: rotate(-90deg);
@@ -177,11 +185,11 @@ progressbar:not(:last-child) trough {
 }
 
 progressbar.warning trough progress {
-  background-color: rgba($warning_color2, 0.9);
+  background-color: $warning_color2;
 }
 
 progressbar.critical trough progress {
-  background-color: rgba($critical_color, 0.9);
+  background-color: $critical_color;
 }
 
 calendar {
