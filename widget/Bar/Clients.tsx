@@ -25,6 +25,7 @@ export default () => (
   <box className="clients">
     {bind(hyprland, "clients").as((clients) =>
       clients
+        .filter((client) => client.class)
         .sort(
           (c1, c2) =>
             c1.workspace.id - c2.workspace.id || c1.x - c2.x || c1.y - c2.y,
@@ -36,7 +37,7 @@ export default () => (
               className={Variable.derive(
                 [fc, bind(client, "fullscreen")],
                 (c, full) =>
-                  `${c.address === address && "focused"} ${full && "fullscreen"}`,
+                  `${c?.address === address && "focused"} ${full && "fullscreen"}`,
               )()}
               onClickRelease={(_, { button }) => actions[button]?.(address)}
               tooltipText={title}

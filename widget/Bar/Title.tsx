@@ -7,7 +7,7 @@ const focused = bind(hyprland, "focusedClient");
 export default () => (
   <box className="title" visible={focused.as(Boolean)}>
     {focused.as((client) => (
-      <label label={bind(client, "title").as(String)} truncate />
+      client && <label label={bind(client, "title").as(String)} truncate />
     ))}
   </box>
 );
