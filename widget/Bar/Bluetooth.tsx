@@ -8,7 +8,8 @@ const bluetooth = Bluetooth.get_default();
 const deviceMap: Record<string, string> = {
   "input-keyboard": "󰌌",
   "input-mouse": "󰍽",
-  "audio-headset": "󱡏",
+  "audio-headset": "",
+  "audio-headphones": "",
 };
 
 const icons = ["󰂃", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
@@ -30,7 +31,10 @@ export default () => (
         return devices
           .filter(({ connected }) => connected)
           .map(({ icon, name }) => {
-            const deviceIcon = deviceMap[icon] || "";
+            // if name contains pods, then it's an airpod
+            const deviceIcon = name.toLowerCase().includes("pods")
+              ? "󱡏"
+              : deviceMap[icon] || "";
             const paddedName = name.padEnd(maxName + 2);
             const batteryColor = 100 <= 20 ? 'color="red"' : "";
             const batteryIcon = getIcon(100);
