@@ -17,7 +17,7 @@ const getIcon = (v: number) =>
 
 const actions = {
   [Astal.MouseButton.PRIMARY]: () => bluetooth.toggle(),
-  [Astal.MouseButton.MIDDLE]: () => subprocess("pavucontrol"),
+  [Astal.MouseButton.MIDDLE]: () => subprocess("blueman-manager"),
 };
 
 export default () => (
