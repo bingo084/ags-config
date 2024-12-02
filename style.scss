@@ -1,6 +1,6 @@
 $font-family: "JetBrainsMono NF", "Font Awesome 6 Free Solid";
 $fg_color: rgb(32, 32, 32);
-$bg_color: rgba(255, 255, 255, 0.5);
+$bg_color: rgba(242, 242, 247, 0.5);
 $shadow_color: rgba(0, 0, 0, 0.1);
 $border_radius: 5px;
 $theme_color: rgb(0, 122, 255);
@@ -11,6 +11,7 @@ $critical_color: rgb(255, 59, 48);
 
 * {
   all: unset;
+  font-size: 15px;
   font-weight: 500;
 }
 
@@ -23,6 +24,7 @@ tooltip {
 
   label {
     padding: 1px 5px;
+    font-size: 0.95em;
   }
 }
 
@@ -70,7 +72,7 @@ menu {
 }
 
 window.bar {
-  background-color: rgba($bg_color, 0.3);
+  background-color: $bg_color;
   color: $fg_color;
 
   >centerbox {
@@ -85,8 +87,8 @@ window.bar {
 }
 
 button {
-  min-width: 26px;
-  min-height: 25px;
+  min-width: 25px;
+  min-height: 24px;
   margin: 3px 1px 3px 0;
   border-radius: $border_radius;
   border: 2px solid transparent;
@@ -140,6 +142,14 @@ button {
 }
 
 .critical {
+  color: $critical_color;
+}
+
+.sleep {
+  color: $warning_color2;
+}
+
+.idle {
   color: $critical_color;
 }
 
