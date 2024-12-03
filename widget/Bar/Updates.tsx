@@ -54,7 +54,7 @@ export default () => (
           : packages
               .map(({ name, old_version, new_version, aur }) => {
                 const important = important_pkgs.indexOf(name) != -1;
-                name = `<span ${important ? 'color="orange"' : aur ? 'color="darkgrey"' : ""}> ${name.padEnd(maxName)}</span>`;
+                name = `<span ${important ? 'color="orange"' : aur ? 'color="grey"' : ""}> ${name.padEnd(maxName)}</span>`;
                 old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
                 new_version = `<span color="green">${new_version}</span>`;
                 return `${name}  ${old_version}  ${new_version}`;
