@@ -123,16 +123,6 @@ button {
   margin: 0 7px;
 }
 
-.battery {
-  &.charging {
-    color: $success_color;
-  }
-
-  &.warning {
-    color: $warning_color;
-  }
-}
-
 .updatable {
   color: $theme_color;
 }
