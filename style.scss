@@ -135,14 +135,6 @@ button {
   color: $critical_color;
 }
 
-.sleep {
-  color: $warning_color2;
-}
-
-.idle {
-  color: $critical_color;
-}
-
 .traffic {
   .icon {
     -gtk-icon-transform: rotate(-90deg);

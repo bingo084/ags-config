@@ -1,13 +1,14 @@
 import { exec, subprocess, Variable } from "astal";
-import Astal from "gi://Astal";
+import { App, Astal } from "astal/gtk3";
 
 interface Inhibit {
   pid?: number;
   what?: string;
 }
 
-const refresh = () =>
-  JSON.parse(exec("./script/inhibit.sh") || "{}") as Inhibit;
+App.add_icons("./asset/icon/coffee");
+
+const refresh = () => JSON.parse(exec("./script/inhibit.sh")) as Inhibit;
 const kill = () => exec(`kill ${inhibit.get().pid}`);
 const create = (what: string) =>
   subprocess(
@@ -35,8 +36,7 @@ export default () => (
   <eventbox
     onClickRelease={(_, { button }) => actions[button]?.()}
     tooltipText={inhibit(({ what }) => `Inhibit ${what || "off"}`)}
-    className={inhibit(({ what }) => what || "")}
   >
-    <icon icon="preferences-desktop-screensaver-symbolic" />
+    <icon icon={inhibit(({ what }) => `coffee-${what}`)} />
   </eventbox>
 );
