@@ -18,17 +18,14 @@ import Updates from "./Updates";
 import Weather from "./Weather";
 import Workspaces from "./Workspaces";
 
+const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
+
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
     className="bar"
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
-    anchor={
-      Astal.WindowAnchor.TOP |
-      Astal.WindowAnchor.LEFT |
-      Astal.WindowAnchor.RIGHT
-    }
-    application={App}
+    anchor={TOP | LEFT | RIGHT}
   >
     <centerbox>
       <box>
