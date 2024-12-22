@@ -1,4 +1,4 @@
-import { App, Astal, Gdk, Gtk } from "astal/gtk3";
+import { Astal, Gdk, Gtk } from "astal/gtk3";
 import Audio from "./Audio";
 import Battery from "./Battery";
 import Bluetooth from "./Bluetooth";
