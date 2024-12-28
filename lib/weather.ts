@@ -82,12 +82,22 @@ export default class Weather extends GObject.Object {
 
   constructor() {
     super();
-    this.refresh();
-    setInterval(() => this.refresh(), 10 * 60 * 1000);
+    this.refresh(3);
+    setInterval(() => this.refresh(3), 10 * 60 * 1000);
   }
 
-  refresh() {
-    this.#fetchNow().then((now) => ((this.#now = now.now), this.notify("now")));
+  async refresh(retry: number) {
+    try {
+      this.#now = (await this.#fetchNow()).now;
+      this.notify("now");
+    } catch (e) {
+      if (retry > 0) {
+        console.warn(`Retrying weather refresh... attempts left: ${retry}`);
+        await this.refresh(retry - 1);
+      } else {
+        console.error("All retries failed:", e);
+      }
+    }
   }
 
   async #fetchNow() {
