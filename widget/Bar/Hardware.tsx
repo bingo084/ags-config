@@ -4,12 +4,10 @@ import { Astal, astalify, ConstructProps, Gtk } from "astal/gtk3";
 const level = (v: number, l1: number, l2: number) =>
   v < l1 ? "" : v < l2 ? "warning" : "critical";
 
-const cpu = Variable(0).poll(2000, "./script/cpu.sh", parseFloat);
-const ram = Variable(0).poll(2000, "./script/ram.sh", parseFloat);
-const temp = Variable({ cpu: 0, gpu: 0 }).poll(
-  2000,
-  "./script/temp.sh",
-  (out) => JSON.parse(out),
+const cpu = Variable(0).watch("./script/cpu.sh 2", parseFloat);
+const ram = Variable(0).watch("./script/ram.sh 2", parseFloat);
+const temp = Variable({ cpu: 0, gpu: 0 }).watch("./script/temp.sh 2", (out) =>
+  JSON.parse(out),
 );
 const disk = Variable({
   size: "0G",
@@ -17,7 +15,7 @@ const disk = Variable({
   avail: "0G",
   use: "0%",
   mount_on: "?",
-}).poll(2000, "./script/disk.sh", (out) => JSON.parse(out));
+}).watch("./script/disk.sh 2", (out) => JSON.parse(out));
 
 const actions = {
   [Astal.MouseButton.MIDDLE]: () => subprocess("missioncenter"),

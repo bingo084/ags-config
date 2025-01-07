@@ -22,15 +22,14 @@ const actions = {
     subprocess("kitty ./script/installupdates.sh"),
 };
 
-const updates = Variable({ count: 0, packages: [] } as Updates).poll(
-  60 * 60 * 1000,
+const updates = Variable({ count: 0, packages: [] } as Updates).watch(
   "./script/updates.sh",
   (out) => (className.set(""), JSON.parse(out)),
 );
 const className = Variable("spin");
 
 const refresh = () => (
-  spin(), updates.isPolling() && updates.stopPoll(), updates.startPoll()
+  spin(), updates.isWatching() && updates.stopWatch(), updates.startWatch()
 );
 const spin = () => className.set("spin");
 Object.assign(globalThis, { updates: { spin, refresh } });
