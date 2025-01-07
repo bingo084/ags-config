@@ -39,7 +39,6 @@ export default () => (
   <eventbox
     visible={updates(({ count }) => count > 0)}
     onClickRelease={(_, { button }) => actions[button]?.()}
-    onDestroy={() => (updates.drop(), className.drop())}
   >
     <box
       className={updates(({ count }) => level(count, 1, 25, 50))}

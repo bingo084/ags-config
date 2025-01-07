@@ -20,7 +20,6 @@ const actions = {
 export default () => (
   <eventbox
     onClickRelease={(_, { button }) => actions[button]?.()}
-    onDestroy={() => dateTime.drop()}
   >
     <label label={dateTimeStr()} />
   </eventbox>

@@ -45,7 +45,6 @@ export default () => (
  TEMP: ${temp.cpu}°C(CPU) / ${temp.gpu}°C(GPU)
  DISK: ${used} used out of ${size} on ${mount_on} (${use})`,
     )()}
-    onDestroy={() => (cpu.drop(), ram.drop(), temp.drop(), disk.drop())}
   >
     <box spacing={8}>
       <icon icon="preferences-desktop-display-symbolic" />
