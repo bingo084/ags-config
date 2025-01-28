@@ -30,15 +30,15 @@ export default () => (
         );
         return devices
           .filter(({ connected }) => connected)
-          .map(({ icon, name }) => {
+          .map(({ icon, name, batteryPercentage }) => {
             // if name contains pods, then it's an airpod
             const deviceIcon = name.toLowerCase().includes("pods")
               ? "󱡏"
               : deviceMap[icon] || "";
             const paddedName = name.padEnd(maxName + 2);
             const batteryColor = 100 <= 20 ? 'color="red"' : "";
-            const batteryIcon = getIcon(100);
-            return `${deviceIcon} ${paddedName}<span ${batteryColor}>${batteryIcon} ${100}%</span>`;
+            const batteryIcon = getIcon(batteryPercentage);
+            return `${deviceIcon} ${paddedName}<span ${batteryColor}>${batteryIcon} ${batteryPercentage}%</span>`;
           })
           .join("\n");
       })}
