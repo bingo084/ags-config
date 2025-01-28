@@ -6,7 +6,7 @@ const brightness = Brightness.get_default();
 const hyprland = Hyprland.get_default();
 
 const chageBrightness = (deltaY: number) => {
-  const step = deltaY == 0 ? 0 : deltaY > 0 ? 0.01 : -0.01;
+  const step = deltaY == 0 ? 0 : deltaY < 0 ? 0.01 : -0.01;
   brightness.screen = brightness.screen + step;
 };
 
