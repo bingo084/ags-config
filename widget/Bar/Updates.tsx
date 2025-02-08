@@ -51,8 +51,20 @@ export default () => (
           ? "No updates"
           : packages
               .map(({ name, old_version, new_version, aur }) => {
-                const important = important_pkgs.indexOf(name) != -1;
-                name = `<span ${important ? 'color="orange"' : aur ? 'color="grey"' : ""}> ${name.padEnd(maxName)}</span>`;
+                const [oldMajor, oldMinor] = old_version.split(".").map(Number);
+                const [newMajor, newMinor] = new_version.split(".").map(Number);
+                const majorUpdate = newMajor > oldMajor;
+                const minorUpdate = !majorUpdate && newMinor > oldMinor;
+                const important = important_pkgs.includes(name);
+
+                const nameStyle = [
+                  majorUpdate ? 'color="red"' : "",
+                  minorUpdate ? 'color="orange"' : "",
+                  important ? 'weight="heavy"' : "",
+                  aur ? 'style="italic"' : "",
+                ].join(" ");
+
+                name = `<span ${nameStyle}> ${name.padEnd(maxName)}</span>`;
                 old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
                 new_version = `<span color="green">${new_version}</span>`;
                 return `${name}  ${old_version}  ${new_version}`;
