@@ -72,7 +72,7 @@ export default () => (
               .join("\n");
       })}
     >
-      <icon className={className()} icon="emblem-synchronizing-symbolic" />
+      <icon className={className()} icon="synchronizing-symbolic" />
       <label label={updates(({ count }) => `${count}`)} />
     </box>
   </eventbox>

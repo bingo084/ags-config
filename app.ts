@@ -7,6 +7,8 @@ const scss = "./style.scss";
 const css = "/tmp/style.css";
 exec(`sass ${scss} ${css}`);
 
+App.add_icons("./asset/icon");
+
 App.start({
   css: css,
   main() {
