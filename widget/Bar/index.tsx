@@ -31,7 +31,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
       <box>
         <Power />
         <Search />
-        <Workspaces />
+        {Workspaces(gdkmonitor)}
         <Clients />
         <Submap />
         <Title />
