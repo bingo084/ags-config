@@ -1,6 +1,7 @@
 import Brightness from "../../lib/brightness";
 import Hyprland from "gi://AstalHyprland";
 import { bind } from "astal/binding";
+import { Gdk } from "astal/gtk3";
 
 const brightness = Brightness.get_default();
 const hyprland = Hyprland.get_default();
@@ -29,12 +30,10 @@ const icons = [
 ];
 const getIcon = (v: number) => icons[Math.round(v * (icons.length - 1))];
 
-export default () => (
+export default (gdkmonitor: Gdk.Monitor) => (
   <eventbox
     onScroll={(_, { delta_y }) => chageBrightness(delta_y)}
-    visible={bind(hyprland, "monitors").as(
-      (monitors) => !!monitors.find((monitor) => monitor.name === "eDP-1"),
-    )}
+    visible={gdkmonitor.manufacturer === "BOE"}
   >
     <label
       label={bind(brightness, "screen").as(

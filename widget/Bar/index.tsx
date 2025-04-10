@@ -46,7 +46,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Bluetooth />
         <Inhibit />
         <Audio />
-        <Brightness />
+        {Brightness(gdkmonitor)}
         <Battery />
         <Clock />
         <Systray />
