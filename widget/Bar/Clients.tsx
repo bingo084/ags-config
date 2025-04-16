@@ -1,10 +1,11 @@
-import Apps from "gi://AstalApps";
 import Astal from "gi://Astal";
 import Hyprland from "gi://AstalHyprland";
 import { bind, Variable } from "astal";
+import { App } from "astal/gtk3";
 
 const hyprland = Hyprland.get_default();
-const app = new Apps.Apps();
+
+App.add_icons("./asset/icon/apps");
 
 const dispatch = (dispatcher: string, address: string) =>
   hyprland.message(`dispatch ${dispatcher} address:0x${address}`);
@@ -15,9 +16,6 @@ const actions = {
   [Astal.MouseButton.MIDDLE]: (address: string) =>
     dispatch("closewindow", address),
 };
-
-const trans = (clazz: string) =>
-  clazz === "org.telegram.desktop" ? "telegram" : clazz;
 
 const fc = bind(hyprland, "focusedClient");
 
@@ -31,7 +29,7 @@ export default () => (
             c1.workspace.id - c2.workspace.id || c1.x - c2.x || c1.y - c2.y,
         )
         .map((client) => {
-          const { address, class: clazz, title } = client;
+          const { address, initialClass, title } = client;
           return (
             <button
               className={Variable.derive(
@@ -42,11 +40,7 @@ export default () => (
               onClickRelease={(_, { button }) => actions[button]?.(address)}
               tooltipText={title}
             >
-              <icon
-                icon={
-                  app.fuzzy_query(trans(clazz))[0]?.iconName || "image-missing"
-                }
-              />
+              <icon icon={initialClass} />
             </button>
           );
         }),
