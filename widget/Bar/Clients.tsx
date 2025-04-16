@@ -17,6 +17,9 @@ const actions = {
     dispatch("closewindow", address),
 };
 
+const trans = (clazz: string) =>
+  clazz === "Feishu" ? "bytedance-feishu" : clazz.toLowerCase();
+
 const fc = bind(hyprland, "focusedClient");
 
 export default () => (
@@ -40,7 +43,7 @@ export default () => (
               onClickRelease={(_, { button }) => actions[button]?.(address)}
               tooltipText={title}
             >
-              <icon icon={initialClass.toLowerCase()} />
+              <icon icon={trans(initialClass)} />
             </button>
           );
         }),
