@@ -40,7 +40,7 @@ export default () => (
               onClickRelease={(_, { button }) => actions[button]?.(address)}
               tooltipText={title}
             >
-              <icon icon={initialClass} />
+              <icon icon={initialClass.toLowerCase()} />
             </button>
           );
         }),
