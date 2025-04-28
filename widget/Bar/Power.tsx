@@ -1,5 +1,5 @@
 import Astal from "gi://Astal";
-import { subprocess } from "astal";
+import { GLib, subprocess } from "astal";
 
 const actions = {
   [Astal.MouseButton.PRIMARY]: () => subprocess("wlogout"),
@@ -7,6 +7,7 @@ const actions = {
 
 export default () => (
   <button onClickRelease={(_, { button }) => actions[button]?.()}>
-    <icon icon="system-shutdown-symbolic" />
+    {/* <icon icon="system-shutdown-symbolic" /> */}
+    <icon icon={GLib.get_os_info("LOGO") || "missing-symbolic"} />
   </button>
 );
