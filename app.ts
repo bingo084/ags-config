@@ -15,14 +15,14 @@ App.start({
       bars.set(gdkmonitor, Bar(gdkmonitor));
     }
 
-    App.connect("monitor-added", (_, gdkmonitor) => {
-      bars.set(gdkmonitor, Bar(gdkmonitor));
-    });
-
-    App.connect("monitor-removed", (_, gdkmonitor) => {
-      bars.get(gdkmonitor)?.unparent();
-      bars.delete(gdkmonitor);
-    });
+    // App.connect("monitor-added", (_, gdkmonitor) => {
+    //   bars.set(gdkmonitor, Bar(gdkmonitor));
+    // });
+    //
+    // App.connect("monitor-removed", (_, gdkmonitor) => {
+    //   bars.get(gdkmonitor)?.unparent();
+    //   bars.delete(gdkmonitor);
+    // });
 
     Calendar();
   },
