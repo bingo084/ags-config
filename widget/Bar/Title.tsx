@@ -7,11 +7,14 @@ const focused = bind(hyprland, "focusedClient");
 
 export default () => (
   <box cssClasses={["title"]} visible={focused.as(Boolean)}>
-    {focused.as((client) => (
-      <label
-        label={bind(client, "title").as(String)}
-        ellipsize={Pango.EllipsizeMode.END}
-      />
-    ))}
+    {focused.as(
+      (client) =>
+        client && (
+          <label
+            label={bind(client, "title").as(String)}
+            ellipsize={Pango.EllipsizeMode.END}
+          />
+        ),
+    )}
   </box>
 );

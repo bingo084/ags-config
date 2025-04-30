@@ -33,7 +33,7 @@ export default () => (
               cssClasses={Variable.derive(
                 [fc, bind(client, "fullscreen")],
                 (c, full) => [
-                  c.address === address ? "focused" : "",
+                  c?.address === address ? "focused" : "",
                   full ? "fullscreen" : "",
                 ],
               )()}
