@@ -14,7 +14,6 @@ export default () => (
             setup={(self) => {
               self.insert_action_group("dbusmenu", item.actionGroup);
               self.popover.set_has_arrow(false);
-              self.popover.set_autohide(false);
             }}
             tooltipMarkup={bind(item, "tooltipMarkup")}
             popover={Gtk.PopoverMenu.new_from_model(item.menuModel)}
