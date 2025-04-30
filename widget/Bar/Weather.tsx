@@ -1,4 +1,4 @@
-import { App, Astal } from "astal/gtk3";
+import { App } from "astal/gtk4";
 import Weather, { Location } from "../../lib/weather";
 import { bind, exec } from "astal";
 
@@ -51,32 +51,32 @@ const transIcon = (icon: string) =>
     "2425": "weather-severe-alert-symbolic",
   })[icon] || icon;
 
-const actions = {
-  [Astal.MouseButton.PRIMARY]: () => weather.refresh(),
-  [Astal.MouseButton.MIDDLE]: () => exec(`xdg-open "${weather.now?.fxLink}"`),
+const actions: Record<number, () => void> = {
+  1: () => weather.refresh(),
+  2: () => exec(`xdg-open "${weather.now?.fxLink}"`),
 };
 
 export default () => (
-  <eventbox onClickRelease={(_, { button }) => actions[button]?.()}>
-    <box
-      spacing={8}
-      tooltipMarkup={bind(weather, "now").as(
-        ({
-          location: { ad_info },
-          obsTime,
-          temp,
-          feelsLike,
-          text,
-          windDir,
-          windScale,
-          windSpeed,
-          humidity,
-          precip,
-          pressure,
-          vis,
-          cloud,
-          dew,
-        }) => `当前位置：${formatLocation(ad_info)}
+  <box
+    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+    spacing={8}
+    tooltipMarkup={bind(weather, "now").as(
+      ({
+        location: { ad_info },
+        obsTime,
+        temp,
+        feelsLike,
+        text,
+        windDir,
+        windScale,
+        windSpeed,
+        humidity,
+        precip,
+        pressure,
+        vis,
+        cloud,
+        dew,
+      }) => `当前位置：${formatLocation(ad_info)}
 观测时间：${formatTime(obsTime)}
 实时温度：${temp}°C
 体感温度：${feelsLike}°C
@@ -88,10 +88,9 @@ export default () => (
 能   见  度：${vis}公里
 云          量：${cloud}%
 露点温度：${dew}°C`,
-      )}
-    >
-      <icon icon={bind(weather, "now").as(({ icon }) => transIcon(icon))} />
-      <label label={bind(weather, "now").as(({ temp }) => `${temp}°C`)} />
-    </box>
-  </eventbox>
+    )}
+  >
+    <image iconName={bind(weather, "now").as(({ icon }) => transIcon(icon))} />
+    <label label={bind(weather, "now").as(({ temp }) => `${temp}°C`)} />
+  </box>
 );

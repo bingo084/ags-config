@@ -1,5 +1,6 @@
 import Hyprland from "gi://AstalHyprland";
 import { Label } from "astal/gtk3/widget";
+import { hook } from "astal/gtk4";
 
 const hyprland = Hyprland.get_default();
 
@@ -8,13 +9,13 @@ export default () => (
     spacing={8}
     visible={false}
     setup={(self) =>
-      self.hook(hyprland, "submap", (_, name) => {
-        (self.children[1] as Label).label = name || "";
+      hook(self, hyprland, "submap", (_, name) => {
+        (self.children[1] as unknown as Label).label = name || "";
         name ? self.show() : self.hide();
       })
     }
   >
-    <icon icon="input-keyboard-symbolic" />
+    <image iconName="input-keyboard-symbolic" />
     <label />
   </box>
 );

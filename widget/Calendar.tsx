@@ -1,17 +1,9 @@
-import { App, Astal, astalify, ConstructProps, Gdk, Gtk } from "astal/gtk3";
-import GObject from "gi://GObject";
+import { GLib } from "astal";
+import { App, Astal, astalify, Gdk, Gtk } from "astal/gtk4";
 
-class Calendar extends astalify(Gtk.Calendar) {
-  static {
-    GObject.registerClass(this);
-  }
-
-  constructor(
-    props: ConstructProps<Calendar, Gtk.ColorButton.ConstructorProps, {}>,
-  ) {
-    super(props as any);
-  }
-}
+const Calendar = astalify<Gtk.Calendar, Gtk.Calendar.ConstructorProps>(
+  Gtk.Calendar,
+);
 
 export default () => (
   <window
@@ -19,8 +11,8 @@ export default () => (
     anchor={Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT}
     visible={false}
     keymode={Astal.Keymode.EXCLUSIVE}
-    onKeyReleaseEvent={(_, event) =>
-      event.get_keyval()[1] == Gdk.KEY_Escape && App.toggle_window("calendar")
+    onKeyReleased={(_, keyval) =>
+      keyval == Gdk.KEY_Escape && App.toggle_window("calendar")
     }
     application={App}
   >
@@ -28,9 +20,7 @@ export default () => (
       setup={(self) =>
         App.connect("window-toggled", (_, { name, visible }) => {
           if (visible && name == "calendar") {
-            const d = new Date();
-            self.select_day(d.getDate());
-            self.select_month(d.getMonth(), d.getFullYear());
+            self.select_day(GLib.DateTime.new_now_local());
           }
         })
       }

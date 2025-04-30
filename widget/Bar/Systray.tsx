@@ -1,7 +1,6 @@
 import Tray from "gi://AstalTray";
 import { bind } from "astal";
-import Astal from "gi://Astal";
-import Gdk from "gi://Gdk";
+import { Gtk } from "astal/gtk4";
 
 const tray = Tray.get_default();
 
@@ -12,24 +11,25 @@ export default () => (
         .filter((item) => item.gicon)
         .map((item) => (
           <menubutton
+            setup={(self) => {
+              self.insert_action_group("dbusmenu", item.actionGroup);
+              self.popover.set_has_arrow(false);
+              self.popover.set_autohide(false);
+            }}
             tooltipMarkup={bind(item, "tooltipMarkup")}
-            usePopover={false}
-            actionGroup={bind(item, "actionGroup").as((ag) => ["dbusmenu", ag])}
-            menuModel={bind(item, "menuModel")}
-            onButtonReleaseEvent={(self, event) => {
-              const [_, x, y] = event.get_root_coords();
-              const button = event.get_button()[1];
-              const { PRIMARY, SECONDARY } = Astal.MouseButton;
-              const { SOUTH, NORTH } = Gdk.Gravity;
-              if (button === PRIMARY) {
+            popover={Gtk.PopoverMenu.new_from_model(item.menuModel)}
+            onButtonReleased={(self, state) => {
+              const [_, x, y] = state.get_position();
+              const button = state.get_button();
+              if (button === 1) {
                 item.activate(x, y);
-              } else if (button === SECONDARY) {
-                self.get_popup()?.popup_at_widget(self, SOUTH, NORTH, event);
+              } else if (button === 3) {
+                self.popup();
               }
               return true;
             }}
           >
-            <icon gicon={bind(item, "gicon")} />
+            <image gicon={bind(item, "gicon")} />
           </menubutton>
         )),
     )}

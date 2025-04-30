@@ -1,5 +1,4 @@
 import Network from "gi://AstalNetwork";
-import Astal from "gi://Astal";
 import { bind, subprocess, Variable } from "astal";
 
 const { wifi, wired, primary } = Network.get_default();
@@ -8,8 +7,8 @@ const icons = ["󰢿", "󰢼", "󰢽", "󰢾"];
 const getIcon = (v: number) =>
   icons[Math.round((v / 100) * (icons.length - 1))];
 
-const actions = {
-  [Astal.MouseButton.MIDDLE]: () => subprocess("nm-applet"),
+const actions: Record<number, () => void> = {
+  2: () => subprocess("nm-applet"),
 };
 
 const iconName = Variable.derive(
@@ -22,7 +21,7 @@ const tooltipText = Variable.derive(
 );
 
 export default () => (
-  <eventbox onClickRelease={(_, { button }) => actions[button]?.()}>
-    <icon icon={iconName()} tooltipText={tooltipText()} />
-  </eventbox>
+  <box onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
+    <image iconName={iconName()} tooltipText={tooltipText()} />
+  </box>
 );

@@ -1,31 +1,24 @@
-import Astal from "gi://Astal";
 import AstalWp from "gi://AstalWp";
 import { bind, subprocess } from "astal";
 
 const speaker = AstalWp.get_default()?.audio.defaultSpeaker!;
 
-const actions = {
-  [Astal.MouseButton.PRIMARY]: () => speaker.set_mute(!speaker.mute),
-  [Astal.MouseButton.MIDDLE]: () => subprocess("pavucontrol"),
-};
-
-const chageVolume = (deltaY: number) => {
-  const step = deltaY == 0 ? 0 : deltaY < 0 ? 0.01 : -0.01;
-  speaker.set_volume(speaker.volume + step);
+const actions: Record<number, () => void> = {
+  1: () => speaker.set_mute(!speaker.mute),
+  2: () => subprocess("pavucontrol"),
 };
 
 export default () => (
-  <eventbox
-    onClickRelease={(_, { button }) => actions[button]?.()}
-    onScroll={(_, { delta_y }) => chageVolume(delta_y)}
+  <box
+    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+    onScroll={(_, __, dy) => speaker.set_volume(speaker.volume - dy / 100)}
+    tooltipText={bind(speaker, "description")}
   >
-    <box tooltipText={bind(speaker, "description")}>
-      <icon icon={bind(speaker, "volumeIcon")} />
-      <label
-        label={bind(speaker, "volume").as(
-          (volume) => ` ${Math.round(volume * 100)}%`,
-        )}
-      />
-    </box>
-  </eventbox>
+    <image iconName={bind(speaker, "volumeIcon")} />
+    <label
+      label={bind(speaker, "volume").as(
+        (volume) => ` ${Math.round(volume * 100)}%`,
+      )}
+    />
+  </box>
 );

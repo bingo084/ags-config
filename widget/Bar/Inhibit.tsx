@@ -1,5 +1,5 @@
 import { exec, subprocess, Variable } from "astal";
-import { App, Astal } from "astal/gtk3";
+import { App } from "astal/gtk4";
 
 interface Inhibit {
   pid?: number;
@@ -17,8 +17,8 @@ const create = (what: string) =>
 
 const inhibit = Variable(refresh());
 
-const actions = {
-  [Astal.MouseButton.PRIMARY]: () => {
+const actions: Record<number, () => void> = {
+  1: () => {
     if (inhibit.get().what === "idle") {
       kill();
     } else if (inhibit.get().what === "sleep") {
@@ -33,10 +33,10 @@ const actions = {
 };
 
 export default () => (
-  <eventbox
-    onClickRelease={(_, { button }) => actions[button]?.()}
+  <box
+    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
     tooltipText={inhibit(({ what }) => `Inhibit ${what || "off"}`)}
   >
-    <icon icon={inhibit(({ what }) => `coffee-${what}`)} />
-  </eventbox>
+    <image iconName={inhibit(({ what }) => `coffee-${what}`)} />
+  </box>
 );

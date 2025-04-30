@@ -1,4 +1,4 @@
-import { Astal, Gdk, Gtk } from "astal/gtk3";
+import { Astal, Gdk, Gtk } from "astal/gtk4";
 import Audio from "./Audio";
 import Battery from "./Battery";
 import Bluetooth from "./Bluetooth";
@@ -22,7 +22,8 @@ const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
 
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
-    className="bar"
+    visible
+    cssClasses={["bar"]}
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     anchor={TOP | LEFT | RIGHT}

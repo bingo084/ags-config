@@ -7,4 +7,4 @@ if [ -n "$gjs_pid" ]; then
     kill $gjs_pid
 fi
 
-ags run > ~/.cache/ags/ags.log 2>&1
+ags run --gtk4 > ~/.cache/ags/ags.log 2>&1

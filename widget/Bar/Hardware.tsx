@@ -1,9 +1,10 @@
 import { GObject, subprocess, Variable } from "astal";
-import { Astal, astalify, ConstructProps, Gtk } from "astal/gtk3";
+import { Astal, astalify, ConstructProps, Gtk } from "astal/gtk4";
 import GTop from "gi://GTop";
 
-const level = (v: number, l1: number, l2: number) =>
-  v < l1 ? "" : v < l2 ? "warning" : "critical";
+const level = (v: number, l1: number, l2: number) => [
+  v < l1 ? "" : v < l2 ? "warning" : "critical",
+];
 
 const ram = Variable(0).poll(2000, () => {
   const memory = new GTop.glibtop_mem();
@@ -60,25 +61,17 @@ const disk = Variable({
   };
 });
 
-const actions = {
-  [Astal.MouseButton.MIDDLE]: () => subprocess("missioncenter"),
+const actions: Record<number, () => void> = {
+  2: () => subprocess("missioncenter"),
 };
 
-class ProgressBar extends astalify(Gtk.ProgressBar) {
-  static {
-    GObject.registerClass(this);
-  }
-
-  constructor(
-    props: ConstructProps<ProgressBar, Gtk.ProgressBar.ConstructorProps, {}>,
-  ) {
-    super(props as any);
-  }
-}
+const ProgressBar = astalify<Gtk.ProgressBar, Gtk.ProgressBar.ConstructorProps>(
+  Gtk.ProgressBar,
+);
 
 export default () => (
-  <eventbox
-    onClickRelease={(_, { button }) => actions[button]?.()}
+  <box
+    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
     tooltipMarkup={Variable.derive(
       [cpu, ram, temp, disk],
       (
@@ -93,25 +86,25 @@ export default () => (
     )()}
   >
     <box spacing={8}>
-      <icon icon="preferences-desktop-display-symbolic" />
+      <image iconName="preferences-desktop-display-symbolic" />
       <box vertical={true} valign={Gtk.Align.CENTER}>
         <ProgressBar
-          className={cpu((v) => level(v, 50, 80))}
+          cssClasses={cpu((v) => level(v, 50, 80))}
           fraction={cpu((v) => v / 100)}
         />
         <ProgressBar
-          className={ram((v) => level(v, 70, 90))}
+          cssClasses={ram((v) => level(v, 70, 90))}
           fraction={ram((v) => v / 100)}
         />
         <ProgressBar
-          className={temp(({ cpu }) => level(cpu, 70, 90))}
+          cssClasses={temp(({ cpu }) => level(cpu, 70, 90))}
           fraction={temp(({ cpu }) => cpu / 100)}
         />
         <ProgressBar
-          className={disk(({ use }) => level(parseInt(use), 80, 90))}
+          cssClasses={disk(({ use }) => level(parseInt(use), 80, 90))}
           fraction={disk(({ use }) => parseInt(use) / 100)}
         />
       </box>
     </box>
-  </eventbox>
+  </box>
 );

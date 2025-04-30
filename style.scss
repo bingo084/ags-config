@@ -21,18 +21,21 @@ tooltip {
   color: $fg_color;
   border-radius: $border_radius;
   border: 1px solid $shadow_color;
+  padding: 5px 10px;
 
   label {
-    padding: 1px 5px;
     font-size: 0.95em;
   }
 }
 
-menu {
-  background-color: $bg_color;
-  border-radius: $border_radius;
-  border: 1px solid $shadow_color;
-  padding: 5px;
+popover {
+  contents {
+    background-color: $bg_color;
+    border-radius: $border_radius;
+    border: 1px solid $shadow_color;
+    padding: 5px;
+  }
+
 
   separator {
     background-color: $shadow_color;
@@ -40,7 +43,7 @@ menu {
     margin: 3px 0;
   }
 
-  menuitem {
+  modelbutton {
     padding: 3px 10px;
     border-radius: $border_radius;
     color: $fg_color;
@@ -56,17 +59,22 @@ menu {
       color: rgba($fg_color, 0.4);
     }
 
-    arrow {
-      min-height: 1em;
-      min-width: 1em;
+    arrow.left {
+      margin-left: -2px;
+      margin-right: 6px;
+      -gtk-icon-source: -gtk-icontheme("go-previous-symbolic");
+    }
 
-      &:dir(ltr) {
-        -gtk-icon-source: -gtk-icontheme("go-next-symbolic");
-      }
+    arrow.right {
+      margin-left: 6px;
+      margin-right: -2px;
+      -gtk-icon-source: -gtk-icontheme("go-next-symbolic");
+    }
 
-      &:dir(rtl) {
-        -gtk-icon-source: -gtk-icontheme("go-next-rtl-symbolic");
-      }
+    check {
+      margin-left: -2px;
+      margin-right: 6px;
+      -gtk-icon-source: -gtk-icontheme("object-select-symbolic");
     }
   }
 }
@@ -184,35 +192,56 @@ progressbar.critical trough progress {
   background-color: $critical_color;
 }
 
+@keyframes hover-fade {
+  from {
+    background-color: transparent;
+  }
+}
+
 calendar {
   background-color: $bg_color;
   color: $fg_color;
-  border-radius: 5px;
+  border-radius: $border_radius;
   border: 1px solid $shadow_color;
-  padding: 4px 6px;
+  padding: 4px 8px 8px;
 
-  &:selected {
-    background-color: rgba($theme_color, 0.7);
-    color: rgba($bg_color, 1);
-    border: 1px solid rgba($theme_color, 0.9);
-  }
+  label {
+    margin: 1px;
+    padding: 2px;
+    border-radius: $border_radius;
 
-  &:disabled {
-    color: rgba($fg_color, 0.4);
-  }
+    &:hover {
+      background-color: rgba($theme_color, 0.3);
+      color: rgba($bg_color, 1);
+      border: 2px solid rgba($theme_color, 0.1);
+      animation: hover-fade 0.2s ease-in;
+    }
 
-  &.header,
-  &.button,
-  &.highlight {
-    background-color: transparent;
-    border: none;
-  }
+    &:selected {
+      background-color: rgba($theme_color, 0.7);
+      color: rgba($bg_color, 1);
+      border: 2px solid rgba($theme_color, 0.9);
+    }
 
-  &.button:hover {
-    background-color: rgba($bg_color, 0.4);
-  }
+    &:focus {
+      border: 2px solid rgba($theme_color, 0.9);
+    }
 
-  &:indeterminate {
-    color: rgba($fg_color, 0.4);
+    &:disabled {
+      color: rgba($fg_color, 0.4);
+    }
+
+    &.today {
+      border-radius: 0;
+      border-bottom: 2px solid rgba($theme_color, 0.9);
+
+      &:selected {
+        border-radius: $border_radius;
+      }
+    }
+
+    &.other-month {
+      color: rgba($fg_color, 0.4);
+    }
   }
 }

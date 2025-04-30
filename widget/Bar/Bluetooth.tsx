@@ -1,7 +1,5 @@
-import Astal from "gi://Astal";
 import Bluetooth from "gi://AstalBluetooth";
-import { subprocess } from "astal/process";
-import { bind } from "astal/binding";
+import { bind, subprocess } from "astal";
 
 const bluetooth = Bluetooth.get_default();
 
@@ -16,14 +14,14 @@ const icons = ["󰂃", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "
 const getIcon = (v: number) =>
   icons[Math.round((v / 100) * (icons.length - 1))];
 
-const actions = {
-  [Astal.MouseButton.PRIMARY]: () => bluetooth.toggle(),
-  [Astal.MouseButton.MIDDLE]: () => subprocess("blueman-manager"),
+const actions: Record<number, () => void> = {
+  1: () => bluetooth.toggle(),
+  2: () => subprocess("blueman-manager"),
 };
 
 export default () => (
-  <eventbox onClickRelease={(_, { button }) => actions[button]?.()}>
-    <icon
+  <box onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
+    <image
       tooltipMarkup={bind(bluetooth, "devices").as((devices) => {
         const maxName = Math.max(
           ...bluetooth.get_devices().map(({ name }) => name.length),
@@ -42,9 +40,9 @@ export default () => (
           })
           .join("\n");
       })}
-      icon={bind(bluetooth, "isPowered").as(
+      iconName={bind(bluetooth, "isPowered").as(
         (b) => `bluetooth-${b ? "active" : "disabled"}-symbolic`,
       )}
     />
-  </eventbox>
+  </box>
 );

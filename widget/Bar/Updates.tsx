@@ -1,5 +1,4 @@
 import { subprocess, Variable } from "astal";
-import Astal from "gi://Astal";
 
 interface Updates {
   count: number;
@@ -13,67 +12,64 @@ interface Updates {
 
 const important_pkgs = ["linux", "nvidia-open-dkms", "mesa"];
 
-const level = (v: number, l1: number, l2: number, l3: number) =>
-  v < l1 ? "" : v < l2 ? "updatable" : v < l3 ? "warning" : "critical";
+const level = (v: number, l1: number, l2: number, l3: number) => [
+  v < l1 ? "" : v < l2 ? "updatable" : v < l3 ? "warning" : "critical",
+];
 
-const actions = {
-  [Astal.MouseButton.PRIMARY]: () => refresh(),
-  [Astal.MouseButton.MIDDLE]: () =>
-    subprocess("kitty ./script/installupdates.sh"),
+const actions: Record<number, () => void> = {
+  1: () => refresh(),
+  2: () => subprocess("kitty ./script/installupdates.sh"),
 };
 
 const updates = Variable({ count: 0, packages: [] } as Updates).watch(
   "./script/updates.sh",
-  (out) => (className.set(""), JSON.parse(out)),
+  (out) => (classNames.set([]), JSON.parse(out)),
 );
-const className = Variable("spin");
+const classNames = Variable(["spin"]);
 
 const refresh = () => (
   spin(), updates.isWatching() && updates.stopWatch(), updates.startWatch()
 );
-const spin = () => className.set("spin");
+const spin = () => classNames.set(["spin"]);
 Object.assign(globalThis, { updates: { spin, refresh } });
 
 export default () => (
-  <eventbox
+  <box
     visible={updates(({ count }) => count > 0)}
-    onClickRelease={(_, { button }) => actions[button]?.()}
+    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+    cssClasses={updates(({ count }) => level(count, 1, 25, 50))}
+    spacing={8}
+    tooltipMarkup={updates(({ packages }) => {
+      const maxName = Math.max(...packages.map(({ name }) => name.length));
+      const maxOld = Math.max(
+        ...packages.map(({ old_version }) => old_version.length),
+      );
+      return packages.length == 0
+        ? "No updates"
+        : packages
+            .map(({ name, old_version, new_version, aur }) => {
+              const [oldMajor, oldMinor] = old_version.split(".").map(Number);
+              const [newMajor, newMinor] = new_version.split(".").map(Number);
+              const majorUpdate = newMajor > oldMajor;
+              const minorUpdate = !majorUpdate && newMinor > oldMinor;
+              const important = important_pkgs.includes(name);
+
+              const nameStyle = [
+                majorUpdate ? 'color="red"' : "",
+                minorUpdate ? 'color="orange"' : "",
+                important ? 'weight="heavy"' : "",
+                aur ? 'style="italic"' : "",
+              ].join(" ");
+
+              name = `<span ${nameStyle}> ${name.padEnd(maxName)}</span>`;
+              old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
+              new_version = `<span color="green">${new_version}</span>`;
+              return `${name}  ${old_version}  ${new_version}`;
+            })
+            .join("\n");
+    })}
   >
-    <box
-      className={updates(({ count }) => level(count, 1, 25, 50))}
-      spacing={8}
-      tooltipMarkup={updates(({ packages }) => {
-        const maxName = Math.max(...packages.map(({ name }) => name.length));
-        const maxOld = Math.max(
-          ...packages.map(({ old_version }) => old_version.length),
-        );
-        return packages.length == 0
-          ? "No updates"
-          : packages
-              .map(({ name, old_version, new_version, aur }) => {
-                const [oldMajor, oldMinor] = old_version.split(".").map(Number);
-                const [newMajor, newMinor] = new_version.split(".").map(Number);
-                const majorUpdate = newMajor > oldMajor;
-                const minorUpdate = !majorUpdate && newMinor > oldMinor;
-                const important = important_pkgs.includes(name);
-
-                const nameStyle = [
-                  majorUpdate ? 'color="red"' : "",
-                  minorUpdate ? 'color="orange"' : "",
-                  important ? 'weight="heavy"' : "",
-                  aur ? 'style="italic"' : "",
-                ].join(" ");
-
-                name = `<span ${nameStyle}> ${name.padEnd(maxName)}</span>`;
-                old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
-                new_version = `<span color="green">${new_version}</span>`;
-                return `${name}  ${old_version}  ${new_version}`;
-              })
-              .join("\n");
-      })}
-    >
-      <icon className={className()} icon="synchronizing-symbolic" />
-      <label label={updates(({ count }) => `${count}`)} />
-    </box>
-  </eventbox>
+    <image cssClasses={classNames()} iconName="synchronizing-symbolic" />
+    <label label={updates(({ count }) => `${count}`)} />
+  </box>
 );

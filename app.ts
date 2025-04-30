@@ -1,16 +1,13 @@
-import { App, Gdk, Gtk } from "astal/gtk3";
+import { App, Gdk, Gtk } from "astal/gtk4";
+import style from "./style.scss";
 import Bar from "./widget/Bar";
 import Calendar from "./widget/Calendar";
-import { exec, monitorFile } from "astal";
-
-const scss = "./style.scss";
-const css = "/tmp/style.css";
-exec(`sass ${scss} ${css}`);
+import { monitorFile } from "astal";
 
 App.add_icons("./asset/icon");
 
 App.start({
-  css: css,
+  css: style,
   main() {
     const bars = new Map<Gdk.Monitor, Gtk.Widget>();
 
@@ -23,7 +20,7 @@ App.start({
     });
 
     App.connect("monitor-removed", (_, gdkmonitor) => {
-      bars.get(gdkmonitor)?.destroy();
+      bars.get(gdkmonitor)?.unparent();
       bars.delete(gdkmonitor);
     });
 
@@ -34,7 +31,4 @@ App.start({
   },
 });
 
-monitorFile(
-  `./style.scss`,
-  () => (exec(`sass ${scss} ${css}`), App.apply_css(css, true)),
-);
+monitorFile(`./style.scss`, () => App.apply_css("./style.scss", true));

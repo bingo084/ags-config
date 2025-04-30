@@ -86,7 +86,7 @@ export default class Weather extends GObject.Object {
     setInterval(() => this.refresh(3), 10 * 60 * 1000);
   }
 
-  async refresh(retry: number) {
+  async refresh(retry: number = 3) {
     try {
       this.#now = (await this.#fetchNow()).now;
       this.notify("now");

@@ -1,20 +1,15 @@
-import Astal from "gi://Astal";
 import Hyprland from "gi://AstalHyprland";
 import { bind, Variable } from "astal";
-import { App } from "astal/gtk3";
+import { App } from "astal/gtk4";
 
 const hyprland = Hyprland.get_default();
 
 App.add_icons("./asset/icon/apps");
 
-const dispatch = (dispatcher: string, address: string) =>
-  hyprland.message(`dispatch ${dispatcher} address:0x${address}`);
-
-const actions = {
-  [Astal.MouseButton.PRIMARY]: (address: string) =>
-    dispatch("focuswindow", address),
-  [Astal.MouseButton.MIDDLE]: (address: string) =>
-    dispatch("closewindow", address),
+const addPrefix = (address: string) => `address:0x${address}`;
+const actions: Record<number, (address: string) => void> = {
+  1: (address) => hyprland.dispatch("focuswindow", addPrefix(address)),
+  2: (address) => hyprland.dispatch("closewindow", addPrefix(address)),
 };
 
 const trans = (clazz: string) =>
@@ -23,7 +18,7 @@ const trans = (clazz: string) =>
 const fc = bind(hyprland, "focusedClient");
 
 export default () => (
-  <box className="clients">
+  <box cssClasses={["clients"]}>
     {bind(hyprland, "clients").as((clients) =>
       clients
         .filter((client) => client.class)
@@ -35,15 +30,20 @@ export default () => (
           const { address, initialClass, title } = client;
           return (
             <button
-              className={Variable.derive(
+              cssClasses={Variable.derive(
                 [fc, bind(client, "fullscreen")],
-                (c, full) =>
-                  `${c?.address === address && "focused"} ${full && "fullscreen"}`,
+                (c, full) => [
+                  c.address === address ? "focused" : "",
+                  full ? "fullscreen" : "",
+                ],
               )()}
-              onClickRelease={(_, { button }) => actions[button]?.(address)}
+              onClicked={() => actions[1]?.(address)}
+              onButtonReleased={(_, state) =>
+                actions[state.get_button()]?.(address)
+              }
               tooltipText={title}
             >
-              <icon icon={trans(initialClass)} />
+              <image iconName={trans(initialClass)} />
             </button>
           );
         }),

@@ -64,9 +64,9 @@ const traffic = Variable.derive(
 );
 
 export default () => (
-  <box className="traffic" visible={traffic(({ visible }) => visible)}>
-    <icon className="icon" icon={traffic(({ icon }) => icon)} />
+  <box cssClasses={["traffic"]} visible={traffic(({ visible }) => visible)}>
+    <image cssClasses={["icon"]} iconName={traffic(({ icon }) => icon)} />
     <label label={traffic(({ value }) => ` ${value}`)} />
-    <label className="unit" label={traffic(({ unit }) => ` ${unit}`)} />
+    <label cssClasses={["unit"]} label={traffic(({ unit }) => ` ${unit}`)} />
   </box>
 );
