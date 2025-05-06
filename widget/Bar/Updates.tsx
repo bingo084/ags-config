@@ -1,4 +1,5 @@
 import { subprocess, Variable } from "astal";
+import { Gtk } from "astal/gtk4";
 
 interface Updates {
   count: number;
@@ -33,41 +34,51 @@ const refresh = () => (
 const spin = () => classNames.set(["spin"]);
 Object.assign(globalThis, { updates: { spin, refresh } });
 
+const tooltipMarkup = (packages: Updates["packages"]) => {
+  if (packages.length == 0) return "No updates";
+  const maxName = Math.max(...packages.map((p) => p.name.length));
+  const maxOld = Math.max(...packages.map((p) => p.old_version.length));
+  return packages
+    .map(({ name, old_version, new_version, aur }) => {
+      const [oldMajor, oldMinor] = old_version.split(".").map(Number);
+      const [newMajor, newMinor] = new_version.split(".").map(Number);
+      const majorUpdate = newMajor > oldMajor;
+      const minorUpdate = !majorUpdate && newMinor > oldMinor;
+      const important = important_pkgs.includes(name);
+
+      const nameStyle = [
+        majorUpdate ? 'color="red"' : "",
+        minorUpdate ? 'color="orange"' : "",
+        important ? 'weight="heavy"' : "",
+        aur ? 'style="italic"' : "",
+      ].join(" ");
+
+      name = `<span ${nameStyle}> ${name.padEnd(maxName)}</span>`;
+      old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
+      new_version = `<span color="green">${new_version}</span>`;
+      return `${name}  ${old_version}  ${new_version}`;
+    })
+    .join("\n");
+};
+
 export default () => (
   <box
     visible={updates(({ count }) => count > 0)}
     onButtonReleased={(_, state) => actions[state.get_button()]?.()}
     cssClasses={updates(({ count }) => level(count, 1, 25, 50))}
     spacing={8}
-    tooltipMarkup={updates(({ packages }) => {
-      const maxName = Math.max(...packages.map(({ name }) => name.length));
-      const maxOld = Math.max(
-        ...packages.map(({ old_version }) => old_version.length),
-      );
-      return packages.length == 0
-        ? "No updates"
-        : packages
-            .map(({ name, old_version, new_version, aur }) => {
-              const [oldMajor, oldMinor] = old_version.split(".").map(Number);
-              const [newMajor, newMinor] = new_version.split(".").map(Number);
-              const majorUpdate = newMajor > oldMajor;
-              const minorUpdate = !majorUpdate && newMinor > oldMinor;
-              const important = important_pkgs.includes(name);
-
-              const nameStyle = [
-                majorUpdate ? 'color="red"' : "",
-                minorUpdate ? 'color="orange"' : "",
-                important ? 'weight="heavy"' : "",
-                aur ? 'style="italic"' : "",
-              ].join(" ");
-
-              name = `<span ${nameStyle}> ${name.padEnd(maxName)}</span>`;
-              old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
-              new_version = `<span color="green">${new_version}</span>`;
-              return `${name}  ${old_version}  ${new_version}`;
-            })
-            .join("\n");
-    })}
+    setup={(self) => {
+      self.set_has_tooltip(true);
+      self.connect("query-tooltip", (_, __, ___, ____, tooltip) => {
+        const label = new Gtk.Label({
+          label: tooltipMarkup(updates().get().packages),
+          useMarkup: true,
+          wrap: false,
+        });
+        tooltip.set_custom(label);
+        return true;
+      });
+    }}
   >
     <image cssClasses={classNames()} iconName="synchronizing-symbolic" />
     <label label={updates(({ count }) => `${count}`)} />
