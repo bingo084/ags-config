@@ -1,4 +1,4 @@
-import { App, Gdk, Gtk } from "astal/gtk4";
+import { App } from "astal/gtk4";
 import style from "./style.scss";
 import Bar from "./widget/Bar";
 import Calendar from "./widget/Calendar";
@@ -10,7 +10,6 @@ App.start({
   css: style,
   main() {
     App.get_monitors().forEach(Bar);
-
     Calendar();
   },
   requestHandler(js, res) {
