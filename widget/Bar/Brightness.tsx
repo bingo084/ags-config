@@ -26,7 +26,7 @@ const getIcon = (v: number) => icons[Math.round(v * (icons.length - 1))];
 export default (gdkmonitor: Gdk.Monitor) => (
   <box
     onScroll={(_, __, dy) => (brightness.screen = brightness.screen - dy / 100)}
-    visible={gdkmonitor.manufacturer === "BOE"}
+    visible={gdkmonitor.connector === "eDP-1"}
   >
     <label
       label={bind(brightness, "screen").as(
