@@ -34,6 +34,7 @@ popover {
     border-radius: $border_radius;
     border: 1px solid $shadow_color;
     padding: 5px;
+    box-shadow: 0 1px 5px 1px $shadow_color;
   }
 
 
