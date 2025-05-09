@@ -24,11 +24,11 @@ export default () => (
               const [_, x, y] = state.get_position();
               const button = state.get_button();
               if (button === 1) {
+                self.popdown();
                 item.activate(x, y);
               } else if (button === 3) {
                 self.popup();
               }
-              return true;
             }}
           >
             <image gicon={bind(item, "gicon")} />
