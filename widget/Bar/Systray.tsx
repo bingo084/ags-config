@@ -16,7 +16,10 @@ export default () => (
               self.popover.set_has_arrow(false);
             }}
             tooltipMarkup={bind(item, "tooltipMarkup")}
-            popover={Gtk.PopoverMenu.new_from_model(item.menuModel)}
+            popover={Gtk.PopoverMenu.new_from_model_full(
+              item.menuModel,
+              Gtk.PopoverMenuFlags.NESTED,
+            )}
             onButtonReleased={(self, state) => {
               const [_, x, y] = state.get_position();
               const button = state.get_button();
