@@ -83,6 +83,7 @@ export default () => (
     }}
   >
     <image
+      cssClasses={classNames()}
       iconName={updates(
         ({ count }) => `synchronizing-${level(count, 1, 25, 50)}`,
       )}
