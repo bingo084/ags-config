@@ -12,8 +12,12 @@ const actions: Record<number, (address: string) => void> = {
   2: (address) => hyprland.dispatch("closewindow", addPrefix(address)),
 };
 
-const trans = (clazz: string) =>
-  clazz === "Feishu" ? "bytedance-feishu" : clazz;
+const iconMap: Record<string, string> = {
+  Feishu: "bytedance-feishu",
+  QQ: "qq",
+};
+
+const trans = (clazz: string) => iconMap[clazz] ?? clazz;
 
 const fc = bind(hyprland, "focusedClient");
 
