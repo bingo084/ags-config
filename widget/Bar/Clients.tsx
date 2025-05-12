@@ -13,7 +13,7 @@ const actions: Record<number, (address: string) => void> = {
 };
 
 const trans = (clazz: string) =>
-  clazz === "Feishu" ? "bytedance-feishu" : clazz.toLowerCase();
+  clazz === "Feishu" ? "bytedance-feishu" : clazz;
 
 const fc = bind(hyprland, "focusedClient");
 
