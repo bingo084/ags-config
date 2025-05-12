@@ -1,5 +1,5 @@
-import { GObject, subprocess, Variable } from "astal";
-import { Astal, astalify, ConstructProps, Gtk } from "astal/gtk4";
+import { subprocess, Variable } from "astal";
+import { astalify, Gtk } from "astal/gtk4";
 import GTop from "gi://GTop";
 
 const level = (v: number, l1: number, l2: number) => [
