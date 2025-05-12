@@ -1,5 +1,5 @@
 import { subprocess, Variable } from "astal";
-import { App, Gtk } from "astal/gtk4";
+import { Gtk } from "astal/gtk4";
 
 interface Updates {
   count: number;
@@ -10,8 +10,6 @@ interface Updates {
     aur?: boolean;
   }[];
 }
-
-App.add_icons("./asset/icon/synchronizing");
 
 const important_pkgs = ["linux", "nvidia-open-dkms", "mesa"];
 
@@ -82,12 +80,7 @@ export default () => (
       });
     }}
   >
-    <image
-      cssClasses={classNames()}
-      iconName={updates(
-        ({ count }) => `synchronizing-${level(count, 1, 25, 50)}`,
-      )}
-    />
+    <image cssClasses={classNames()} iconName="synchronizing-symbolic" />
     <label label={updates(({ count }) => `${count}`)} />
   </box>
 );

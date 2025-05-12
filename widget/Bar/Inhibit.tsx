@@ -1,12 +1,9 @@
 import { exec, subprocess, Variable } from "astal";
-import { App } from "astal/gtk4";
 
 interface Inhibit {
   pid?: number;
-  what?: string;
+  what: string;
 }
-
-App.add_icons("./asset/icon/coffee");
 
 const refresh = () => JSON.parse(exec("./script/inhibit.sh")) as Inhibit;
 const kill = () => exec(`kill ${inhibit.get().pid}`);
@@ -35,8 +32,11 @@ const actions: Record<number, () => void> = {
 export default () => (
   <box
     onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-    tooltipText={inhibit(({ what }) => `Inhibit ${what || "off"}`)}
+    tooltipText={inhibit(({ what }) => `Inhibit ${what}`)}
   >
-    <image iconName={inhibit(({ what }) => `coffee-${what}`)} />
+    <image
+      iconName="coffee-symbolic"
+      cssClasses={inhibit(({ what }) => [`${what}`])}
+    />
   </box>
 );

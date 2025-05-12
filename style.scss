@@ -136,11 +136,13 @@ button {
   color: $theme_color;
 }
 
-.warning {
+.warning,
+.sleep {
   color: $warning_color2;
 }
 
-.critical {
+.critical,
+.idle {
   color: $critical_color;
 }
 
