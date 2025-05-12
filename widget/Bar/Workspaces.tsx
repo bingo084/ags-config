@@ -13,13 +13,15 @@ export default (gdkmonitor: Gdk.Monitor) => (
   <box onScroll={(_, __, dy) => dispatch(dy)}>
     {bind(hyprland, "workspaces").as((wss) =>
       wss
-        .filter(({ monitor }) => monitor.name === gdkmonitor.connector)
         .filter(({ id }) => id > 0)
         .sort((w1, w2) => w1.id - w2.id)
         .map((ws) => (
           <button
             cssClasses={fw.as((fw) => [`${fw === ws && "focused"}`])}
             onClicked={() => ws.focus()}
+            visible={bind(ws, "monitor").as(
+              (monitor) => monitor.name === gdkmonitor.connector,
+            )}
           >
             {ws.id}
           </button>

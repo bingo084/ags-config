@@ -1,6 +1,6 @@
 import Hyprland from "gi://AstalHyprland";
 import { bind, Variable } from "astal";
-import { App } from "astal/gtk4";
+import { App, Gdk } from "astal/gtk4";
 
 const hyprland = Hyprland.get_default();
 
@@ -21,7 +21,7 @@ const trans = (clazz: string) => iconMap[clazz] ?? clazz;
 
 const fc = bind(hyprland, "focusedClient");
 
-export default () => (
+export default (gdkmonitor: Gdk.Monitor) => (
   <box cssClasses={["clients"]}>
     {bind(hyprland, "clients").as((clients) =>
       clients
@@ -46,6 +46,9 @@ export default () => (
                 actions[state.get_button()]?.(address)
               }
               tooltipText={title}
+              visible={bind(client, "monitor").as(
+                (c) => c.name === gdkmonitor.connector,
+              )}
             >
               <image iconName={trans(initialClass)} />
             </button>
