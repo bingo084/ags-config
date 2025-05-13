@@ -47,7 +47,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
               }
               tooltipText={title}
               visible={bind(client, "monitor").as(
-                (c) => c.name === gdkmonitor.connector,
+                (m) => m?.name === gdkmonitor.connector,
               )}
             >
               <image iconName={trans(initialClass)} />
