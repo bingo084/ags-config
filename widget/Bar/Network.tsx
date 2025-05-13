@@ -30,15 +30,15 @@ const tooltipMarkup = Variable.derive(
   <span color="dimgrey">Driver</span>   ${device.driver}
   <span color="dimgrey">Speed</span>    ${bitrate / 1000} Mbps
 <b>IPv4</b>
-  <span color="dimgrey">IP</span>       ${conn.ip4Config
-    .get_addresses()
+  <span color="dimgrey">IP</span>       ${conn?.ip4Config
+    ?.get_addresses()
     .map((a) => a.get_address() + "/" + a.get_prefix())
     .join(", ")}
-  <span color="dimgrey">Gateway</span>  ${conn.ip4Config.gateway}
-  <span color="dimgrey">DNS</span>      ${conn.ip4Config.nameservers.join(", ")}
+  <span color="dimgrey">Gateway</span>  ${conn?.ip4Config?.gateway}
+  <span color="dimgrey">DNS</span>      ${conn?.ip4Config?.nameservers.join(", ")}
 <b>IPv6</b>
-  <span color="dimgrey">IP</span>       ${conn.ip6Config
-    .get_addresses()
+  <span color="dimgrey">IP</span>       ${conn?.ip6Config
+    ?.get_addresses()
     .map((a) => a.get_address() + "/" + a.get_prefix())
     .join(", ")}`,
 );
