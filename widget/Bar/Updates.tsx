@@ -7,7 +7,10 @@ interface Updates {
     name: string;
     old_version: string;
     new_version: string;
-    aur?: boolean;
+    aur: boolean;
+    url: string;
+    install_reason: string;
+    dependency: boolean;
   }[];
 }
 
@@ -39,20 +42,33 @@ const tooltipMarkup = (packages: Updates["packages"]) => {
   const maxName = Math.max(...packages.map((p) => p.name.length));
   const maxOld = Math.max(...packages.map((p) => p.old_version.length));
   return packages
-    .map(({ name, old_version, new_version, aur }) => {
+    .map(({ name, old_version, new_version, dependency, aur }) => {
       const [oldMajor, oldMinor] = old_version.split(".").map(Number);
       const [newMajor, newMinor] = new_version.split(".").map(Number);
-      const majorUpdate = newMajor > oldMajor;
-      const minorUpdate = !majorUpdate && newMinor > oldMinor;
+      const majorUpdate = !dependency && newMajor > oldMajor;
+      const minorUpdate = !dependency && !majorUpdate && newMinor > oldMinor;
       const important = important_pkgs.includes(name);
-
+      const sort =
+        (majorUpdate ? 10 : minorUpdate ? 20 : !dependency ? 30 : 40) +
+        (aur ? 40 : 0) +
+        (!important ? 1 : 0);
       const nameStyle = [
         majorUpdate ? 'color="red"' : "",
         minorUpdate ? 'color="orange"' : "",
         important ? 'weight="heavy"' : "",
         aur ? 'style="italic"' : "",
+        dependency ? 'color="dimgrey"' : "",
       ].join(" ");
-
+      return {
+        name,
+        old_version,
+        new_version,
+        sort,
+        nameStyle,
+      };
+    })
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ name, old_version, new_version, nameStyle }) => {
       name = `<span ${nameStyle}> ${name.padEnd(maxName)}</span>`;
       old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
       new_version = `<span color="green">${new_version}</span>`;
