@@ -36,10 +36,15 @@ const cpu = Variable.derive(
   ],
   ({ load }) => load,
 );
-
-const temp = Variable({ cpu: 0, gpu: 0 }).watch("./script/temp.sh 2", (out) =>
-  JSON.parse(out),
-);
+const cpuTemp = Variable(0).poll(2000, ["sensors", "-A"], (out) => {
+  const match = out.match(/Package id 0:\s+\+?([\d\.]+)/);
+  return match?.[1] ? Math.round(parseFloat(match[1])) : 0;
+});
+const gpuTemp = Variable(0).poll(2000, [
+  "nvidia-smi",
+  "--query-gpu=temperature.gpu",
+  "--format=csv,noheader,nounits",
+]);
 const disk = Variable({
   size: "0G",
   used: "0G",
@@ -73,15 +78,16 @@ export default () => (
   <box
     onButtonReleased={(_, state) => actions[state.get_button()]?.()}
     tooltipMarkup={Variable.derive(
-      [cpu, ram, temp, disk],
+      [cpu, ram, cpuTemp, gpuTemp, disk],
       (
         cpu,
         ram,
-        temp,
+        cpuTemp,
+        gpuTemp,
         { used, size, mount_on, use },
       ) => ` CPU : ${cpu.toFixed(1)}%
  RAM : ${ram.toFixed(1)}%
- TEMP: ${temp.cpu}°C(CPU) / ${temp.gpu}°C(GPU)
+ TEMP: ${cpuTemp}°C(CPU) / ${gpuTemp}°C(GPU)
  DISK: ${used} used out of ${size} on ${mount_on} (${use})`,
     )()}
   >
@@ -97,8 +103,8 @@ export default () => (
           fraction={ram((v) => v / 100)}
         />
         <ProgressBar
-          cssClasses={temp(({ cpu }) => level(cpu, 70, 90))}
-          fraction={temp(({ cpu }) => cpu / 100)}
+          cssClasses={cpuTemp((t) => level(t, 70, 90))}
+          fraction={cpuTemp((t) => t / 100)}
         />
         <ProgressBar
           cssClasses={disk(({ use }) => level(parseInt(use), 80, 90))}
