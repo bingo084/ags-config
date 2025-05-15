@@ -25,14 +25,15 @@ const actions: Record<number, () => void> = {
   2: () => subprocess("kitty ./script/installupdates.sh"),
 };
 
-const updates = Variable({ count: 0, packages: [] } as Updates).watch(
+const updates = Variable({ count: 0, packages: [] } as Updates).poll(
+  3600_000,
   "./script/updates.sh",
   (out) => (classNames.set([]), JSON.parse(out)),
 );
 const classNames = Variable(["spin"]);
 
 const refresh = () => (
-  spin(), updates.isWatching() && updates.stopWatch(), updates.startWatch()
+  spin(), updates.isPolling() && updates.stopPoll(), updates.startPoll()
 );
 const spin = () => classNames.set(["spin"]);
 Object.assign(globalThis, { updates: { spin, refresh } });
