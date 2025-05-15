@@ -1,4 +1,4 @@
-import { Astal, Gdk, Gtk } from "astal/gtk4";
+import { App, Astal, Gdk, Gtk } from "astal/gtk4";
 import Audio from "./Audio";
 import Battery from "./Battery";
 import Bluetooth from "./Bluetooth";
@@ -27,6 +27,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     anchor={TOP | LEFT | RIGHT}
+    application={App}
   >
     <centerbox>
       <box>
