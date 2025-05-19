@@ -1,4 +1,4 @@
-import { subprocess, Variable } from "astal";
+import { GLib, subprocess, Variable } from "astal";
 import { Gtk } from "astal/gtk4";
 
 interface Updates {
@@ -84,7 +84,7 @@ export default () => (
             <box spacing={8}>
               <Gtk.LinkButton
                 uri={pkg.url}
-                tooltipMarkup={`<b>${pkg.description}</b>`}
+                tooltipMarkup={`<b>${GLib.markup_escape_text(pkg.description, -1)}</b>`}
               >
                 <box spacing={8}>
                   <image iconName="package-x-generic-symbolic" />
