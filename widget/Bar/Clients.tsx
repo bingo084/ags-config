@@ -15,6 +15,7 @@ const actions: Record<number, (address: string) => void> = {
 const iconMap: Record<string, string> = {
   Feishu: "bytedance-feishu",
   QQ: "qq",
+  "com.gabm.satty": "satty",
 };
 
 const trans = (clazz: string) => iconMap[clazz] ?? clazz;
