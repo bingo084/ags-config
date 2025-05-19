@@ -5,6 +5,7 @@ interface Updates {
   count: number;
   packages: {
     name: string;
+    description: string;
     old_version: string;
     new_version: string;
     aur: boolean;
@@ -21,8 +22,8 @@ const level = (v: number, l1: number, l2: number, l3: number) => [
 ];
 
 const actions: Record<number, () => void> = {
-  1: () => refresh(),
   2: () => subprocess("kitty ./script/installupdates.sh"),
+  3: () => refresh(),
 };
 
 const updates = Variable({ count: 0, packages: [] } as Updates).poll(
@@ -38,12 +39,10 @@ const refresh = () => (
 const spin = () => classNames.set(["spin"]);
 Object.assign(globalThis, { updates: { spin, refresh } });
 
-const tooltipMarkup = (packages: Updates["packages"]) => {
-  if (packages.length == 0) return "No updates";
-  const maxName = Math.max(...packages.map((p) => p.name.length));
-  const maxOld = Math.max(...packages.map((p) => p.old_version.length));
-  return packages
-    .map(({ name, old_version, new_version, dependency, aur }) => {
+const packages = updates((v) =>
+  v.packages
+    .map((pkg) => {
+      const { name, old_version, new_version, aur, dependency } = pkg;
       const [oldMajor, oldMinor] = old_version.split(".").map(Number);
       const [newMajor, newMinor] = new_version.split(".").map(Number);
       const majorUpdate = !dependency && newMajor > oldMajor;
@@ -53,51 +52,71 @@ const tooltipMarkup = (packages: Updates["packages"]) => {
         (majorUpdate ? 10 : minorUpdate ? 20 : !dependency ? 30 : 40) +
         (aur ? 40 : 0) +
         (!important ? 1 : 0);
-      const nameStyle = [
-        majorUpdate ? 'color="red"' : "",
-        minorUpdate ? 'color="orange"' : "",
-        important ? 'weight="heavy"' : "",
-        aur ? 'style="italic"' : "",
-        dependency ? 'color="dimgrey"' : "",
-      ].join(" ");
       return {
-        name,
-        old_version,
-        new_version,
+        ...pkg,
+        majorUpdate,
+        minorUpdate,
+        important,
         sort,
-        nameStyle,
       };
     })
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ name, old_version, new_version, nameStyle }) => {
-      name = `<span ${nameStyle}> ${name.padEnd(maxName)}</span>`;
-      old_version = `<span color="red">${old_version.padEnd(maxOld)}</span>`;
-      new_version = `<span color="green">${new_version}</span>`;
-      return `${name}  ${old_version}  ${new_version}`;
-    })
-    .join("\n");
-};
+    .sort((a, b) => a.sort - b.sort),
+);
 
 export default () => (
-  <box
-    visible={updates(({ count }) => count > 0)}
-    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-    cssClasses={updates(({ count }) => level(count, 1, 25, 50))}
-    spacing={8}
-    setup={(self) => {
-      self.set_has_tooltip(true);
-      self.connect("query-tooltip", (_, __, ___, ____, tooltip) => {
-        const label = new Gtk.Label({
-          label: tooltipMarkup(updates().get().packages),
-          useMarkup: true,
-          wrap: false,
-        });
-        tooltip.set_custom(label);
-        return true;
-      });
-    }}
+  <menubutton
+    cssClasses={["updates"]} /* visible={updates(({ count }) => count > 0)} */
   >
-    <image cssClasses={classNames()} iconName="synchronizing-symbolic" />
-    <label label={updates(({ count }) => `${count}`)} />
-  </box>
+    <box
+      onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+      cssClasses={updates(({ count }) => level(count, 1, 25, 50))}
+      spacing={8}
+    >
+      <image cssClasses={classNames()} iconName="synchronizing-symbolic" />
+      <label label={updates(({ count }) => `${count}`)} />
+    </box>
+    <popover hasArrow={false}>
+      <box orientation={Gtk.Orientation.VERTICAL}>
+        {packages.as((pkgs) => {
+          const maxName = Math.max(...pkgs.map((p) => p.name.length));
+          const maxOld = Math.max(...pkgs.map((p) => p.old_version.length));
+          return pkgs.map((pkg) => (
+            <box spacing={8}>
+              <Gtk.LinkButton
+                uri={pkg.url}
+                tooltipMarkup={`<b>${pkg.description}</b>`}
+              >
+                <box spacing={8}>
+                  <image iconName="package-x-generic-symbolic" />
+                  <label
+                    cssClasses={[
+                      pkg.majorUpdate ? "critical" : "",
+                      pkg.minorUpdate ? "warning" : "",
+                      pkg.important ? "important" : "",
+                      pkg.aur ? "aur" : "",
+                      pkg.dependency ? "dependency" : "",
+                    ]}
+                    widthChars={maxName * 0.8}
+                    xalign={0}
+                    label={pkg.name}
+                  />
+                </box>
+              </Gtk.LinkButton>
+              <label
+                cssClasses={["critical"]}
+                widthChars={maxOld * 0.85}
+                xalign={0}
+                label={pkg.old_version}
+              />
+              <label
+                cssClasses={["newVersion"]}
+                xalign={0}
+                label={pkg.new_version}
+              />
+            </box>
+          ));
+        })}
+      </box>
+    </popover>
+  </menubutton>
 );

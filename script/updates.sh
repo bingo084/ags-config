@@ -15,35 +15,50 @@ if [ -n "$all_updatable_names" ]; then
     function flush_package_info() {
       if (current_name != "") {
         gsub(/"/, "\\\"", current_url);
-        gsub(/"/, "\\\"", current_reason); # 使用 current_reason
+        gsub(/"/, "\\\"", current_reason);
+        gsub(/"/, "\\\"", current_description); # 转义 description 中的双引号
 
-        # JSON key 改为 "install_reason"
-        printf("{\"name\":\"%s\", \"url\":\"%s\", \"install_reason\":\"%s\", \"dependency\":%s}\n", \
+        # 在 printf 中加入 description 字段
+        printf("{\"name\":\"%s\", \"url\":\"%s\", \"install_reason\":\"%s\", \"dependency\":%s, \"description\":\"%s\"}\n", \
                current_name, \
                (current_url == "" ? "N/A" : current_url), \
                (current_reason == "" ? "N/A" : current_reason), \
-               current_dependency_flag);
+               current_dependency_flag, \
+               (current_description == "" ? "N/A" : current_description)); # 添加 description
       }
-      current_name = ""; current_url = ""; current_reason = ""; current_dependency_flag = "true"; # awk 变量名修改
+      # 重置所有当前包的变量
+      current_name = ""; current_url = ""; current_reason = ""; current_description = ""; current_dependency_flag = "true";
     }
 
-    /^Name            : / {
+    # 注意：以下模式中的空格数量是根据典型 pacman -Qi 输出调整的，
+    # 如果你的 paru -Qi 输出格式略有不同，可能需要微调这些正则表达式中的空格。
+    /^Name            : / { # 12 spaces before colon
       flush_package_info(); 
       current_name = $3; 
       for (i=4; i<=NF; i++) current_name = current_name " "$i;
-      current_url = ""; current_reason = ""; current_dependency_flag = "true"; # awk 变量名修改
+      # 为新包重置所有字段
+      current_url = ""; current_reason = ""; current_description = ""; current_dependency_flag = "true";
       next;
     }
-    /^URL             : / {
+    /^URL             : / { # 13 spaces before colon
       if (current_name != "") {
         current_url = $3;
         for (i=4; i<=NF; i++) current_url = current_url " "$i; 
       }
       next;
     }
-    /^Install Reason  : / {
+    # 添加对 Description 字段的解析
+    # pacman -Qi 输出中 "Description" 和 ":" 之间通常有5个空格
+    /^Description     : / { # 5 spaces before colon
       if (current_name != "") {
-        current_reason = substr($0, index($0, $4)); # awk 变量名修改
+        current_description = $3; # 第一个词
+        for (i=4; i<=NF; i++) current_description = current_description " "$i; # 拼接后续的词
+      }
+      next;
+    }
+    /^Install Reason  : / { # 2 spaces before colon
+      if (current_name != "") {
+        current_reason = substr($0, index($0, $4)); 
         if (current_reason ~ /^Explicitly installed/) {
           current_dependency_flag = "false";
         } else {
@@ -78,8 +93,8 @@ if [ -n "$all_updatable_names" ]; then
     echo -e "${pkgs_base_stream}\n${aur_pkgs_base_stream}" | jq -s '
     map(select(.name != null and .name != "")) | 
     map(
-      # fallback 对象中字段名也修改为 "install_reason"
-      . + ( $ARG_PKG_INFO_MAP[.name] // {url: "N/A", install_reason: "N/A", dependency: true} )
+      # fallback 对象中加入 description 字段
+      . + ( $ARG_PKG_INFO_MAP[.name] // {url: "N/A", install_reason: "N/A", dependency: true, description: "N/A"} )
     )' --argjson ARG_PKG_INFO_MAP "$package_info_map"
   )
   final_packages_json=${final_packages_json:-[]}

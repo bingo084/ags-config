@@ -4,7 +4,7 @@ $bg_color: rgba(242, 242, 247, 0.5);
 $shadow_color: rgba(0, 0, 0, 0.1);
 $border_radius: 5px;
 $theme_color: rgb(0, 122, 255);
-$success_color: rgb(40, 205, 65);
+$success_color: rgb(0, 125, 27);
 $warning_color: rgb(255, 204, 0);
 $warning_color2: rgb(255, 149, 0);
 $critical_color: rgb(255, 59, 48);
@@ -96,9 +96,10 @@ window.bar {
 }
 
 button {
-  min-width: 25px;
+  min-width: 15px;
   min-height: 24px;
   margin: 3px 1px 3px 0;
+  padding: 0 5px;
   border-radius: $border_radius;
   border: 2px solid transparent;
   background-color: transparent;
@@ -144,6 +145,30 @@ button {
 .critical,
 .idle {
   color: $critical_color;
+}
+
+.updates {
+  .newVersion {
+    color: $success_color;
+  }
+
+  .important {
+    font-weight: bold;
+  }
+
+  .aur {
+    font-style: italic;
+  }
+
+  .dependency {
+    color: dimgrey;
+  }
+
+  popover {
+    button {
+      margin: 0;
+    }
+  }
 }
 
 .traffic {
