@@ -84,7 +84,7 @@ export default () => (
           <Gtk.ScrolledWindow
             hscrollbarPolicy={Gtk.PolicyType.NEVER}
             vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
-            heightRequest={Math.min(pkgs.length * 24, 900)}
+            heightRequest={Math.min(pkgs.length * 24 + 1, 900)}
           >
             <box orientation={Gtk.Orientation.VERTICAL}>
               {pkgs.flatMap((pkg) => [

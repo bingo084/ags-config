@@ -23,7 +23,7 @@ const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
 export default (gdkmonitor: Gdk.Monitor) => (
   <window
     visible
-    cssClasses={["bar"]}
+    name="bar"
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     anchor={TOP | LEFT | RIGHT}

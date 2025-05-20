@@ -2,18 +2,12 @@ $font-family: "JetBrainsMono NF", "Font Awesome 6 Free Solid";
 $fg_color: rgb(32, 32, 32);
 $bg_color: rgba(242, 242, 247, 0.5);
 $shadow_color: rgba(0, 0, 0, 0.1);
-$border_radius: 5px;
+$border_radius: 10px;
 $theme_color: rgb(0, 122, 255);
 $success_color: rgb(0, 125, 27);
 $warning_color: rgb(255, 204, 0);
 $warning_color2: rgb(255, 149, 0);
 $critical_color: rgb(255, 59, 48);
-
-* {
-  all: unset;
-  font-size: 15px;
-  font-weight: 500;
-}
 
 tooltip {
   font-family: $font-family;
@@ -21,72 +15,32 @@ tooltip {
   color: $fg_color;
   border-radius: $border_radius;
   border: 1px solid $shadow_color;
-  padding: 5px 10px;
-
-  label {
-    font-size: 0.95em;
-  }
 }
 
 popover {
   contents {
     background-color: $bg_color;
     border-radius: $border_radius;
-    border: 1px solid $shadow_color;
-    padding: 5px;
-    box-shadow: 0 1px 5px 1px $shadow_color;
-  }
-
-
-  separator {
-    background-color: $shadow_color;
-    min-height: 1px;
-    margin: 3px 0;
   }
 
   modelbutton {
-    padding: 3px 10px;
-    border-radius: $border_radius;
     color: $fg_color;
-    border: 1px solid transparent;
 
     &:hover {
       background-color: rgba($theme_color, 0.7);
       color: rgba($bg_color, 1);
-      border: 1px solid rgba($theme_color, 0.9);
-    }
-
-    &:disabled {
-      color: rgba($fg_color, 0.4);
-    }
-
-    arrow.left {
-      margin-left: -2px;
-      margin-right: 6px;
-      -gtk-icon-source: -gtk-icontheme("go-previous-symbolic");
-    }
-
-    arrow.right {
-      margin-left: 6px;
-      margin-right: -2px;
-      -gtk-icon-source: -gtk-icontheme("go-next-symbolic");
-    }
-
-    check {
-      margin-left: -2px;
-      margin-right: 6px;
-      -gtk-icon-source: -gtk-icontheme("object-select-symbolic");
+      box-shadow: inset 0 0 0 1px rgba($theme_color, 0.9);
     }
   }
 }
 
-window.bar {
+#bar {
   background-color: $bg_color;
   color: $fg_color;
 
-  >centerbox {
+  >box {
     > :first-child {
-      margin-left: 3px;
+      margin-left: 2px;
     }
 
     > :last-child {
@@ -96,36 +50,23 @@ window.bar {
 }
 
 button {
-  min-width: 15px;
-  min-height: 24px;
-  margin: 3px 1px 3px 0;
-  padding: 0 5px;
-  border-radius: $border_radius;
-  border: 2px solid transparent;
   background-color: transparent;
-  transition:
-    background-color 0.3s ease,
-    box-shadow 0.3s ease,
-    transform 0.2s ease;
 
   &:hover {
-    background-color: rgba($bg_color, 0.4);
-    box-shadow: 0 2px 8px $shadow_color;
+    background-color: rgba($fg_color, 0.05);
   }
 
   &:active {
-    background-color: rgba($bg_color, 0.3);
-    box-shadow: 0 2px 2px $shadow_color;
+    background-color: rgba($fg_color, 0.1);
   }
 
   &.focused {
-    background-color: rgba($bg_color, 0.3);
-    box-shadow: 0 2px 2px $shadow_color;
+    background-color: rgba($fg_color, 0.1);
     color: $theme_color;
   }
 
   &.fullscreen {
-    border-color: $theme_color;
+    box-shadow: inset 0 0 0 2px $theme_color;
   }
 }
 
@@ -164,11 +105,10 @@ button {
     color: dimgrey;
   }
 
-  popover {
-    button {
-      margin: 0;
-      border: 0;
-    }
+  popover button {
+    color: $fg_color;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 
@@ -197,114 +137,34 @@ progressbar {
     min-height: 3px;
     min-width: 60px;
     background-color: rgba($fg_color, 0.1);
-    border-radius: 5px;
+    margin-top: 1px;
 
     progress {
-      border-radius: 5px;
       min-height: 2px;
       background-color: rgba($fg_color, 0.9);
-
-      &.left {
-        margin: 0;
-      }
     }
+  }
+
+  &.warning trough progress {
+    background-color: $warning_color2;
+  }
+
+  &.critical trough progress {
+    background-color: $critical_color;
   }
 }
 
-scrollbar {
-  trough {
-    background-color: transparent;
-    border-radius: 99px;
-    margin: 9px 4px;
+#calendar {
+  background-color: transparent;
 
-    &:hover {
-      background-color: rgba($fg_color, 0.1);
-      margin: 9px 6px;
-
-      slider {
-        margin: 0px;
-        min-width: 8px;
-      }
-    }
-
-    slider {
-      background-color: rgba($fg_color, 0.2);
-      border-radius: 99px;
-      min-width: 4px;
-      margin: 2px;
-      transition:
-        background-color 0.15s ease,
-        min-width 0.15s ease;
-
-      &:hover {
-        background-color: rgba($fg_color, 0.3);
-      }
-    }
-  }
-}
-
-progressbar:not(:last-child) trough {
-  margin-bottom: 1px;
-}
-
-progressbar.warning trough progress {
-  background-color: $warning_color2;
-}
-
-progressbar.critical trough progress {
-  background-color: $critical_color;
-}
-
-@keyframes hover-fade {
-  from {
-    background-color: transparent;
-  }
-}
-
-calendar {
-  background-color: $bg_color;
-  color: $fg_color;
-  border-radius: $border_radius;
-  border: 1px solid $shadow_color;
-  padding: 4px 8px 8px;
-
-  label {
-    margin: 1px;
-    padding: 2px;
+  calendar {
+    background-color: $bg_color;
+    color: $fg_color;
     border-radius: $border_radius;
+    padding: 4px 8px 8px;
 
-    &:hover {
-      background-color: rgba($theme_color, 0.3);
-      color: rgba($bg_color, 1);
-      border: 2px solid rgba($theme_color, 0.1);
-      animation: hover-fade 0.2s ease-in;
-    }
-
-    &:selected {
-      background-color: rgba($theme_color, 0.7);
-      color: rgba($bg_color, 1);
-      border: 2px solid rgba($theme_color, 0.9);
-    }
-
-    &:focus {
-      border: 2px solid rgba($theme_color, 0.9);
-    }
-
-    &:disabled {
-      color: rgba($fg_color, 0.4);
-    }
-
-    &.today {
-      border-radius: 0;
-      border-bottom: 2px solid rgba($theme_color, 0.9);
-
-      &:selected {
-        border-radius: $border_radius;
-      }
-    }
-
-    &.other-month {
-      color: rgba($fg_color, 0.4);
+    label {
+      padding: 5px;
     }
   }
 }
