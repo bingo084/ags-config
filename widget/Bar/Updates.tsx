@@ -81,7 +81,10 @@ export default () => (
         {packages.as((pkgs) => {
           const maxName = Math.max(...pkgs.map((p) => p.name.length));
           const maxOld = Math.max(...pkgs.map((p) => p.old_version.length));
-          return pkgs.map((pkg) => (
+          return pkgs.flatMap((pkg) => [
+            <Gtk.Separator
+              visible={pkg.aur && pkgs.find((p) => p.aur) === pkg}
+            />,
             <box spacing={8}>
               <Gtk.LinkButton
                 uri={pkg.url}
@@ -114,8 +117,8 @@ export default () => (
                 xalign={0}
                 label={pkg.new_version}
               />
-            </box>
-          ));
+            </box>,
+          ]);
         })}
       </box>
     </popover>
