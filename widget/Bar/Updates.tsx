@@ -77,50 +77,58 @@ export default () => (
       <label label={updates(({ count }) => `${count}`)} />
     </box>
     <popover hasArrow={false}>
-      <box orientation={Gtk.Orientation.VERTICAL}>
-        {packages.as((pkgs) => {
-          const maxName = Math.max(...pkgs.map((p) => p.name.length));
-          const maxOld = Math.max(...pkgs.map((p) => p.old_version.length));
-          return pkgs.flatMap((pkg) => [
-            <Gtk.Separator
-              visible={pkg.aur && pkgs.find((p) => p.aur) === pkg}
-            />,
-            <box spacing={8}>
-              <Gtk.LinkButton
-                uri={pkg.url}
-                tooltipMarkup={`<b>${GLib.markup_escape_text(pkg.description, -1)}</b>`}
-              >
+      {packages.as((pkgs) => {
+        const maxName = Math.max(...pkgs.map((p) => p.name.length));
+        const maxOld = Math.max(...pkgs.map((p) => p.old_version.length));
+        return (
+          <Gtk.ScrolledWindow
+            hscrollbarPolicy={Gtk.PolicyType.NEVER}
+            vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
+            heightRequest={Math.min(pkgs.length * 24, 900)}
+          >
+            <box orientation={Gtk.Orientation.VERTICAL}>
+              {pkgs.flatMap((pkg) => [
+                <Gtk.Separator
+                  visible={pkg.aur && pkgs.find((p) => p.aur) === pkg}
+                />,
                 <box spacing={8}>
-                  <image iconName="package-x-generic-symbolic" />
+                  <Gtk.LinkButton
+                    uri={pkg.url}
+                    tooltipMarkup={`<b>${GLib.markup_escape_text(pkg.description, -1)}</b>`}
+                  >
+                    <box spacing={8}>
+                      <image iconName="package-x-generic-symbolic" />
+                      <label
+                        cssClasses={[
+                          pkg.majorUpdate ? "critical" : "",
+                          pkg.minorUpdate ? "warning" : "",
+                          pkg.important ? "important" : "",
+                          pkg.aur ? "aur" : "",
+                          pkg.dependency ? "dependency" : "",
+                        ]}
+                        widthChars={maxName * 0.8}
+                        xalign={0}
+                        label={pkg.name}
+                      />
+                    </box>
+                  </Gtk.LinkButton>
                   <label
-                    cssClasses={[
-                      pkg.majorUpdate ? "critical" : "",
-                      pkg.minorUpdate ? "warning" : "",
-                      pkg.important ? "important" : "",
-                      pkg.aur ? "aur" : "",
-                      pkg.dependency ? "dependency" : "",
-                    ]}
-                    widthChars={maxName * 0.8}
+                    cssClasses={["critical"]}
+                    widthChars={maxOld * 0.85}
                     xalign={0}
-                    label={pkg.name}
+                    label={pkg.old_version}
                   />
-                </box>
-              </Gtk.LinkButton>
-              <label
-                cssClasses={["critical"]}
-                widthChars={maxOld * 0.85}
-                xalign={0}
-                label={pkg.old_version}
-              />
-              <label
-                cssClasses={["newVersion"]}
-                xalign={0}
-                label={pkg.new_version}
-              />
-            </box>,
-          ]);
-        })}
-      </box>
+                  <label
+                    cssClasses={["newVersion"]}
+                    xalign={0}
+                    label={pkg.new_version}
+                  />
+                </box>,
+              ])}
+            </box>
+          </Gtk.ScrolledWindow>
+        );
+      })}
     </popover>
   </menubutton>
 );

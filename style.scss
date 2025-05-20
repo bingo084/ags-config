@@ -192,19 +192,53 @@ button {
   animation: spin 1.3s linear infinite;
 }
 
-trough {
-  min-height: 3px;
-  min-width: 60px;
-  background-color: rgba($fg_color, 0.1);
-  border-radius: 5px;
-
-  progress {
+progressbar {
+  trough {
+    min-height: 3px;
+    min-width: 60px;
+    background-color: rgba($fg_color, 0.1);
     border-radius: 5px;
-    min-height: 2px;
-    background-color: rgba($fg_color, 0.9);
 
-    &.left {
-      margin: 0;
+    progress {
+      border-radius: 5px;
+      min-height: 2px;
+      background-color: rgba($fg_color, 0.9);
+
+      &.left {
+        margin: 0;
+      }
+    }
+  }
+}
+
+scrollbar {
+  trough {
+    background-color: transparent;
+    border-radius: 99px;
+    margin: 9px 4px;
+
+    &:hover {
+      background-color: rgba($fg_color, 0.1);
+      margin: 9px 6px;
+
+      slider {
+        margin: 0px;
+        min-width: 8px;
+      }
+    }
+
+    slider {
+      background-color: rgba($fg_color, 0.2);
+      border-radius: 99px;
+      min-width: 4px;
+      margin: 2px;
+      transition:
+        background-color 0.15s ease,
+        min-width 0.15s ease;
+
+      &:hover {
+        background-color: rgba($fg_color, 0.3);
+      }
     }
   }
 }
