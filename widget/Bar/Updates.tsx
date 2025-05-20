@@ -65,7 +65,8 @@ const packages = updates((v) =>
 
 export default () => (
   <menubutton
-    cssClasses={["updates"]} /* visible={updates(({ count }) => count > 0)} */
+    cssClasses={["updates"]}
+    visible={updates(({ count }) => count > 0)}
   >
     <box
       onButtonReleased={(_, state) => actions[state.get_button()]?.()}
