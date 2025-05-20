@@ -1,7 +1,6 @@
 import { App } from "astal/gtk4";
 import style from "./style.scss";
 import Bar from "./widget/Bar";
-import Calendar from "./widget/Calendar";
 import { exec, GLib, monitorFile } from "astal";
 
 App.add_icons("./asset/icon");
@@ -15,7 +14,6 @@ App.start({
   css: style,
   main() {
     App.get_monitors().forEach(Bar);
-    Calendar();
   },
   requestHandler(js, res) {
     App.eval(js).then(res).catch(res);
