@@ -88,9 +88,7 @@ export default () => (
           >
             <box orientation={Gtk.Orientation.VERTICAL}>
               {pkgs.flatMap((pkg) => [
-                <Gtk.Separator
-                  visible={pkg.aur && pkgs.find((p) => p.aur) === pkg}
-                />,
+                pkg.aur && pkgs.find((p) => p.aur) === pkg && <Gtk.Separator />,
                 <box spacing={8}>
                   <Gtk.LinkButton
                     uri={pkg.url}
