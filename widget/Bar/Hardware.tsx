@@ -1,10 +1,6 @@
 import { subprocess, Variable } from "astal";
-import { astalify, Gtk } from "astal/gtk4";
+import { Gtk } from "astal/gtk4";
 import GTop from "gi://GTop";
-
-const level = (v: number, l1: number, l2: number) => [
-  v < l1 ? "" : v < l2 ? "warning" : "critical",
-];
 
 const ram = Variable(0).poll(2000, () => {
   const memory = new GTop.glibtop_mem();
@@ -70,10 +66,6 @@ const actions: Record<number, () => void> = {
   2: () => subprocess("missioncenter"),
 };
 
-const ProgressBar = astalify<Gtk.ProgressBar, Gtk.ProgressBar.ConstructorProps>(
-  Gtk.ProgressBar,
-);
-
 export default () => (
   <box
     onButtonReleased={(_, state) => actions[state.get_button()]?.()}
@@ -94,22 +86,23 @@ export default () => (
     <box spacing={8}>
       <image iconName="preferences-desktop-display-symbolic" />
       <box vertical={true} valign={Gtk.Align.CENTER}>
-        <ProgressBar
-          cssClasses={cpu((v) => level(v, 50, 80))}
-          fraction={cpu((v) => v / 100)}
-        />
-        <ProgressBar
-          cssClasses={ram((v) => level(v, 70, 90))}
-          fraction={ram((v) => v / 100)}
-        />
-        <ProgressBar
-          cssClasses={cpuTemp((t) => level(t, 70, 90))}
-          fraction={cpuTemp((t) => t / 100)}
-        />
-        <ProgressBar
-          cssClasses={disk(({ use }) => level(parseInt(use), 80, 90))}
-          fraction={disk(({ use }) => parseInt(use) / 100)}
-        />
+        {[
+          { value: cpu(), offsets: [50, 80] },
+          { value: ram(), offsets: [70, 90] },
+          { value: cpuTemp(), offsets: [70, 90] },
+          { value: disk(({ use }) => parseInt(use)), offsets: [80, 90] },
+        ].map(({ value, offsets }) => (
+          <levelbar
+            minValue={0}
+            maxValue={100}
+            value={value}
+            setup={(self) => {
+              ["normal", "warning", "critical"].forEach((state, idx) =>
+                self.add_offset_value(state, [...offsets, 100][idx]),
+              );
+            }}
+          />
+        ))}
       </box>
     </box>
   </box>

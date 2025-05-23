@@ -141,25 +141,26 @@ button {
   animation: spin 1.3s linear infinite;
 }
 
-progressbar {
+levelbar {
   trough {
-    min-height: 3px;
     min-width: 60px;
-    background-color: rgba($fg_color, 0.1);
-    margin-top: 1px;
+    margin: 1px 0;
 
-    progress {
+    block {
       min-height: 2px;
-      background-color: rgba($fg_color, 0.9);
+
+      &.normal {
+        background-color: rgba($fg_color, 0.9);
+      }
+
+      &.warning {
+        background-color: $warning_color2;
+      }
+
+      &.critical {
+        background-color: $critical_color;
+      }
     }
-  }
-
-  &.warning trough progress {
-    background-color: $warning_color2;
-  }
-
-  &.critical trough progress {
-    background-color: $critical_color;
   }
 }
 
