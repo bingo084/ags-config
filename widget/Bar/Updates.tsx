@@ -1,5 +1,5 @@
-import { GLib, subprocess, Variable } from "astal";
-import { Gtk } from "astal/gtk4";
+import { subprocess, Variable } from "astal";
+import { astalify, Gtk } from "astal/gtk4";
 
 interface Updates {
   count: number;
@@ -63,6 +63,8 @@ const packages = updates((v) =>
     .sort((a, b) => a.sort - b.sort),
 );
 
+const Grid = astalify<Gtk.Grid, Gtk.Grid.ConstructorProps>(Gtk.Grid);
+
 export default () => (
   <menubutton
     cssClasses={["updates"]}
@@ -77,23 +79,18 @@ export default () => (
       <label label={updates(({ count }) => `${count}`)} />
     </box>
     <popover hasArrow={false}>
-      {packages.as((pkgs) => {
-        const maxName = Math.max(...pkgs.map((p) => p.name.length));
-        const maxOld = Math.max(...pkgs.map((p) => p.old_version.length));
-        return (
-          <Gtk.ScrolledWindow
-            hscrollbarPolicy={Gtk.PolicyType.NEVER}
-            vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
-            heightRequest={Math.min(pkgs.length * 24 + 1, 900)}
-          >
-            <box orientation={Gtk.Orientation.VERTICAL}>
-              {pkgs.flatMap((pkg) => [
-                pkg.aur && pkgs.find((p) => p.aur) === pkg && <Gtk.Separator />,
-                <box spacing={8}>
-                  <Gtk.LinkButton
-                    uri={pkg.url}
-                    tooltipMarkup={`<b>${GLib.markup_escape_text(pkg.description, -1)}</b>`}
-                  >
+      {packages.as((pkgs) => (
+        <Gtk.ScrolledWindow
+          hscrollbarPolicy={Gtk.PolicyType.NEVER}
+          vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
+          heightRequest={Math.min(pkgs.length * 24 + 1, 900)}
+        >
+          <Grid
+            setup={(self) => {
+              self.set_column_spacing(8);
+              pkgs.forEach((pkg, row) => {
+                const name = (
+                  <Gtk.LinkButton uri={pkg.url} tooltipText={pkg.description}>
                     <box spacing={8}>
                       <image iconName="package-x-generic-symbolic" />
                       <label
@@ -104,29 +101,33 @@ export default () => (
                           pkg.aur ? "aur" : "",
                           pkg.dependency ? "dependency" : "",
                         ]}
-                        widthChars={maxName * 0.8}
-                        xalign={0}
                         label={pkg.name}
                       />
                     </box>
                   </Gtk.LinkButton>
+                );
+                const oldVersion = (
                   <label
                     cssClasses={["critical"]}
-                    widthChars={maxOld * 0.85}
                     xalign={0}
                     label={pkg.old_version}
                   />
+                );
+                const newVersion = (
                   <label
                     cssClasses={["newVersion"]}
                     xalign={0}
                     label={pkg.new_version}
                   />
-                </box>,
-              ])}
-            </box>
-          </Gtk.ScrolledWindow>
-        );
-      })}
+                );
+                [name, oldVersion, newVersion].forEach((widget, col) => {
+                  self.attach(widget, col, row, 1, 1);
+                });
+              });
+            }}
+          />
+        </Gtk.ScrolledWindow>
+      ))}
     </popover>
   </menubutton>
 );
