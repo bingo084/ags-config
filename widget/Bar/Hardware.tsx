@@ -92,7 +92,7 @@ export default () => (
     </box>
     <popover hasArrow={false}>
       <label
-        use_markup={true}
+        useMarkup={true}
         cssClasses={["nerd-font"]}
         label={Variable.derive(
           [cpu, ram, cpuTemp, gpuTemp, disk],

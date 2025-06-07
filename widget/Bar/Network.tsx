@@ -16,7 +16,7 @@ const iconName = Variable.derive(
   (wifi, wired) => (primary == Network.Primary.WIRED ? wired : wifi),
 );
 
-const tooltipMarkup = Variable.derive(
+const label = Variable.derive(
   [
     bind(wifi, "ssid"),
     bind(wifi, "strength"),
@@ -44,7 +44,10 @@ const tooltipMarkup = Variable.derive(
 );
 
 export default () => (
-  <box onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
-    <image iconName={iconName()} tooltipMarkup={tooltipMarkup()} />
-  </box>
+  <menubutton onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
+    <image iconName={iconName()} />
+    <popover hasArrow={false}>
+      <label useMarkup={true} cssClasses={["nerd-font"]} label={label()} />
+    </popover>
+  </menubutton>
 );

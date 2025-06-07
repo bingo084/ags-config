@@ -69,7 +69,7 @@ export default () => (
     </box>
     <popover hasArrow={false}>
       <label
-        use_markup={true}
+        useMarkup={true}
         label={bind(weather, "now").as(
           ({
             location: { ad_info },
