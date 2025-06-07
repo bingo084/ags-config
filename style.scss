@@ -17,6 +17,10 @@ tooltip {
   border: 1px solid $shadow_color;
 }
 
+.nerd-font {
+  font-family: $font-family;
+}
+
 popover {
   contents {
     background-color: $bg_color;

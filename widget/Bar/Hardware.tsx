@@ -67,22 +67,7 @@ const actions: Record<number, () => void> = {
 };
 
 export default () => (
-  <box
-    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-    tooltipMarkup={Variable.derive(
-      [cpu, ram, cpuTemp, gpuTemp, disk],
-      (
-        cpu,
-        ram,
-        cpuTemp,
-        gpuTemp,
-        { used, size, mount_on, use },
-      ) => ` CPU : ${cpu.toFixed(1)}%
- RAM : ${ram.toFixed(1)}%
- TEMP: ${cpuTemp}°C(CPU) / ${gpuTemp}°C(GPU)
- DISK: ${used} used out of ${size} on ${mount_on} (${use})`,
-    )()}
-  >
+  <menubutton onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
     <box spacing={8}>
       <image iconName="preferences-desktop-display-symbolic" />
       <box vertical={true} valign={Gtk.Align.CENTER}>
@@ -105,5 +90,24 @@ export default () => (
         ))}
       </box>
     </box>
-  </box>
+    <popover hasArrow={false}>
+      <label
+        use_markup={true}
+        cssClasses={["nerd-font"]}
+        label={Variable.derive(
+          [cpu, ram, cpuTemp, gpuTemp, disk],
+          (
+            cpu,
+            ram,
+            cpuTemp,
+            gpuTemp,
+            { used, size, mount_on, use },
+          ) => ` CPU : ${cpu.toFixed(1)}%
+ RAM : ${ram.toFixed(1)}%
+ TEMP: ${cpuTemp}°C(CPU) / ${gpuTemp}°C(GPU)
+ DISK: ${used} used out of ${size} on ${mount_on} (${use})`,
+        )()}
+      />
+    </popover>
+  </menubutton>
 );

@@ -39,7 +39,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Title />
       </box>
       <box />
-      <box halign={Gtk.Align.END} spacing={8}>
+      <box halign={Gtk.Align.END}>
         <Traffic />
         <Weather />
         <Updates />
