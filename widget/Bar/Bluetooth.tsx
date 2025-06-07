@@ -15,34 +15,42 @@ const getIcon = (v: number) =>
   icons[Math.round((v / 100) * (icons.length - 1))];
 
 const actions: Record<number, () => void> = {
-  1: () => bluetooth.toggle(),
   2: () => subprocess("blueman-manager"),
+  3: () => bluetooth.toggle(),
 };
 
 export default () => (
-  <box onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
+  <menubutton onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
     <image
-      tooltipMarkup={bind(bluetooth, "devices").as((devices) => {
-        const maxName = Math.max(
-          ...bluetooth.get_devices().map(({ name }) => name.length),
-        );
-        return devices
-          .filter(({ connected }) => connected)
-          .map(({ icon, name, batteryPercentage }) => {
-            // if name contains pods, then it's an airpod
-            const deviceIcon = name.toLowerCase().includes("pods")
-              ? "󱡏"
-              : deviceMap[icon] || "";
-            const paddedName = name.padEnd(maxName + 2);
-            const batteryColor = 100 <= 20 ? 'color="red"' : "";
-            const batteryIcon = getIcon(batteryPercentage);
-            return `${deviceIcon} ${paddedName}<span ${batteryColor}>${batteryIcon} ${batteryPercentage}%</span>`;
-          })
-          .join("\n");
-      })}
       iconName={bind(bluetooth, "isPowered").as(
         (b) => `bluetooth-${b ? "active" : "disabled"}-symbolic`,
       )}
     />
-  </box>
+    <popover hasArrow={false}>
+      <label
+        useMarkup={true}
+        cssClasses={["nerd-font"]}
+        label={bind(bluetooth, "devices").as((devices) => {
+          const maxName = Math.max(
+            ...bluetooth.get_devices().map(({ name }) => name.length),
+          );
+          return (
+            devices
+              .filter(({ connected }) => connected)
+              .map(({ icon, name, batteryPercentage }) => {
+                // if name contains pods, then it's an airpod
+                const deviceIcon = name.toLowerCase().includes("pods")
+                  ? "󱡏"
+                  : deviceMap[icon] || "";
+                const paddedName = name.padEnd(maxName + 2);
+                const batteryColor = 100 <= 20 ? 'color="red"' : "";
+                const batteryIcon = getIcon(batteryPercentage);
+                return `${deviceIcon} ${paddedName}<span ${batteryColor}>${batteryIcon} ${batteryPercentage}%</span>`;
+              })
+              .join("\n") || "No connected devices"
+          );
+        })}
+      />
+    </popover>
+  </menubutton>
 );

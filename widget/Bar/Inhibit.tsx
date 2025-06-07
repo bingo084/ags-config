@@ -1,4 +1,5 @@
 import { exec, subprocess, Variable } from "astal";
+import { Gtk } from "astal/gtk4";
 
 interface Inhibit {
   pid?: number;
@@ -14,8 +15,8 @@ const create = (what: string) =>
 
 const inhibit = Variable(refresh());
 
-const actions: Record<number, () => void> = {
-  1: () => {
+const actions: Record<number, (widget: Gtk.MenuButton) => void> = {
+  3: (self) => {
     if (inhibit.get().what === "idle") {
       kill();
     } else if (inhibit.get().what === "sleep") {
@@ -26,17 +27,22 @@ const actions: Record<number, () => void> = {
     }
     exec("sleep 0.1");
     inhibit.set(refresh());
+    self.popup();
   },
 };
 
 export default () => (
-  <box
-    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-    tooltipText={inhibit(({ what }) => `Inhibit ${what}`)}
+  <menubutton
+    onButtonReleased={(self, state) => {
+      actions[state.get_button()]?.(self);
+    }}
   >
     <image
       iconName="coffee-symbolic"
       cssClasses={inhibit(({ what }) => [`${what}`])}
     />
-  </box>
+    <popover hasArrow={false}>
+      <label label={inhibit(({ what }) => `Inhibit ${what}`)} />
+    </popover>
+  </menubutton>
 );

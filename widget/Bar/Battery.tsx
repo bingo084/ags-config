@@ -16,8 +16,13 @@ const toolTip = Variable.derive(
 );
 
 export default () => (
-  <box visible={bind(battery, "isPresent")} tooltipText={toolTip()}>
-    <image iconName={bind(battery, "batteryIconName")} />
-    <label label={percentage.as((p) => ` ${(p * 100).toFixed(0)}%`)} />
-  </box>
+  <menubutton visible={bind(battery, "isPresent")}>
+    <box>
+      <image iconName={bind(battery, "batteryIconName")} />
+      <label label={percentage.as((p) => ` ${(p * 100).toFixed(0)}%`)} />
+    </box>
+    <popover hasArrow={false}>
+      <label label={toolTip()} />
+    </popover>
+  </menubutton>
 );
