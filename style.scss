@@ -69,6 +69,10 @@ button {
   &.fullscreen {
     box-shadow: inset 0 0 0 2px $theme_color;
   }
+
+  &.xwayland {
+    box-shadow: inset 0 0 0 2px $warning_color;
+  }
 }
 
 .title {

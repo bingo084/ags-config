@@ -16,6 +16,8 @@ const iconMap: Record<string, string> = {
   Feishu: "bytedance-feishu",
   QQ: "qq",
   "com.gabm.satty": "satty",
+  "code-oss": "com.visualstudio.code.oss",
+  Electron: "electron34",
 };
 
 const trans = (clazz: string) => iconMap[clazz] ?? clazz;
@@ -26,13 +28,12 @@ export default (gdkmonitor: Gdk.Monitor) => (
   <box cssClasses={["clients"]}>
     {bind(hyprland, "clients").as((clients) =>
       clients
-        .filter((client) => client.class)
         .sort(
           (c1, c2) =>
             c1.workspace.id - c2.workspace.id || c1.x - c2.x || c1.y - c2.y,
         )
         .map((client) => {
-          const { address, initialClass, title } = client;
+          const { address, initialClass, title, xwayland } = client;
           return (
             <button
               cssClasses={Variable.derive(
@@ -40,6 +41,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
                 (c, full) => [
                   c?.address === address ? "focused" : "",
                   full ? "fullscreen" : "",
+                  xwayland ? "xwayland" : "",
                 ],
               )()}
               onClicked={() => actions[1]?.(address)}
