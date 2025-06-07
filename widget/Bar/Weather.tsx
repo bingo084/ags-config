@@ -1,4 +1,4 @@
-import { App } from "astal/gtk4";
+import { App, astalify, Gtk } from "astal/gtk4";
 import Weather, { Location } from "../../lib/weather";
 import { bind, exec } from "astal";
 
@@ -57,26 +57,36 @@ const actions: Record<number, () => void> = {
 };
 
 export default () => (
-  <box
-    onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-    spacing={8}
-    tooltipMarkup={bind(weather, "now").as(
-      ({
-        location: { ad_info },
-        obsTime,
-        temp,
-        feelsLike,
-        text,
-        windDir,
-        windScale,
-        windSpeed,
-        humidity,
-        precip,
-        pressure,
-        vis,
-        cloud,
-        dew,
-      }) => `当前位置：${formatLocation(ad_info)}
+  <menubutton>
+    <box
+      onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+      spacing={8}
+    >
+      <image
+        iconName={bind(weather, "now").as(({ icon }) => transIcon(icon))}
+      />
+      <label label={bind(weather, "now").as(({ temp }) => `${temp}°C`)} />
+    </box>
+    <popover hasArrow={false}>
+      <label
+        use_markup={true}
+        label={bind(weather, "now").as(
+          ({
+            location: { ad_info },
+            obsTime,
+            temp,
+            feelsLike,
+            text,
+            windDir,
+            windScale,
+            windSpeed,
+            humidity,
+            precip,
+            pressure,
+            vis,
+            cloud,
+            dew,
+          }) => `当前位置：${formatLocation(ad_info)}
 观测时间：${formatTime(obsTime)}
 实时温度：${temp}°C
 体感温度：${feelsLike}°C
@@ -85,12 +95,11 @@ export default () => (
 相对湿度：${humidity}%
 小时降水：${precip}毫米
 大气压强：${pressure}百帕
-能   见  度：${vis}公里
-云          量：${cloud}%
+能  见  度：${vis}公里
+云         量：${cloud}%
 露点温度：${dew}°C`,
-    )}
-  >
-    <image iconName={bind(weather, "now").as(({ icon }) => transIcon(icon))} />
-    <label label={bind(weather, "now").as(({ temp }) => `${temp}°C`)} />
-  </box>
+        )}
+      />
+    </popover>
+  </menubutton>
 );
