@@ -48,12 +48,19 @@ popover {
     }
 
     > :last-child {
-      margin-right: 2px;
+      margin-right: 11px;
+
     }
   }
 }
 
+menubutton>button {
+  padding: 4px 9px;
+  margin-right: -9px;
+}
+
 button {
+  padding: 4px 9px;
   background-color: transparent;
 
   &:hover {
