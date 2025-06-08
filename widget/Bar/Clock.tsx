@@ -7,7 +7,7 @@ const dateTime = Variable<GLib.DateTime | null>(null).poll(1000, () =>
 );
 const dateTimeStr = Variable.derive(
   [dateTime, format],
-  (time, format) => time?.format(`%a, %b %d, %${format}`) || "",
+  (time, format) => time?.format(` %a, %b %d, %${format}`) || "",
 );
 
 export default () => {
@@ -21,7 +21,10 @@ export default () => {
     <menubutton
       onButtonReleased={(_, state) => actions[state.get_button()]?.()}
     >
-      <label label={dateTimeStr()} />
+      <box>
+        <image iconName="x-office-calendar-symbolic" />
+        <label label={dateTimeStr()} />
+      </box>
       <popover hasArrow={false}>{calendar}</popover>
     </menubutton>
   );
