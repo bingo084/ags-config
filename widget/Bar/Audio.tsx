@@ -22,7 +22,7 @@ export default () => (
       />
     </box>
     <popover hasArrow={false}>
-      <label label={bind(speaker, "description")} />
+      <label label={bind(speaker, "description").as((desc) => desc || "Unknown Device")} />
     </popover>
   </menubutton>
 );
