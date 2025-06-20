@@ -29,6 +29,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
   <box cssClasses={["clients"]}>
     {bind(hyprland, "clients").as((clients) =>
       clients
+        .filter((c) => c.class && c.workspace)
         .sort(
           (c1, c2) =>
             c1.workspace.id - c2.workspace.id || c1.x - c2.x || c1.y - c2.y,
