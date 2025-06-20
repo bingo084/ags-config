@@ -18,6 +18,7 @@ const iconMap: Record<string, string> = {
   "com.gabm.satty": "satty",
   "code-oss": "com.visualstudio.code.oss",
   Electron: "electron34",
+  "org.pulseaudio.pavucontrol": "multimedia-volume-control",
 };
 
 const trans = (clazz: string) => iconMap[clazz] ?? clazz;
