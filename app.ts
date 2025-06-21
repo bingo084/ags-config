@@ -1,7 +1,7 @@
 import { App } from "astal/gtk4";
 import style from "./style.scss";
 import Bar from "./widget/Bar";
-import { exec, GLib, monitorFile } from "astal";
+import { exec, execAsync, GLib, monitorFile, Variable } from "astal";
 
 App.add_icons("./asset/icon");
 
@@ -21,3 +21,22 @@ App.start({
 });
 
 monitorFile(`./style.scss`, () => App.apply_css("./style.scss", true));
+
+Variable("")
+  .watch(["tail", "-n", "0", "-f", `${GLib.get_home_dir()}/.cache/ags/ags.log`])
+  .subscribe((out) => {
+    const warning = out.includes("Gjs-WARNING");
+    const critical = out.includes("Gjs-CRITICAL");
+    if (!warning && !critical) return;
+    execAsync([
+      "notify-send",
+      "-a",
+      "AGS",
+      "-u",
+      warning ? "normal" : "critical",
+      "-i",
+      `${GLib.get_user_config_dir()}/ags/asset/icon/apps/ags.svg`,
+      warning ? "⚠️ GJS Warning" : "❌ GJS Critical",
+      out.split(" ").slice(4).join(" "),
+    ]).catch((e) => print("notify-send error:", e));
+  });
