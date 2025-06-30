@@ -20,7 +20,7 @@ const formatTime = (time: string) => {
   const seconds = String(date.getSeconds()).padStart(2, "0");
   return `<span ${outdate ? 'color="red"' : ""}>${year}-${month}-${day} ${hours}:${minutes}:${seconds}</span>`;
 };
-const transIcon = (icon: string) =>
+const trans = (icon: string = "qweather") =>
   ({
     "100": "weather-clear-symbolic",
     "101": "weather-few-clouds-symbolic",
@@ -59,47 +59,29 @@ export default () => (
     <box
       // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
       spacing={8}
+      visible={createBinding(weather, "now")(Boolean)}
     >
-      <image
-        iconName={createBinding(weather, "now").as(({ icon }) =>
-          transIcon(icon),
-        )}
-      />
-      <label
-        label={createBinding(weather, "now").as(({ temp }) => `${temp}°C`)}
-      />
+      <image iconName={createBinding(weather, "now")((v) => trans(v?.icon))} />
+      <label label={createBinding(weather, "now")((v) => `${v?.temp}°C`)} />
     </box>
     <popover hasArrow={false}>
       <label
         useMarkup={true}
-        label={createBinding(weather, "now").as(
-          ({
-            location: { ad_info },
-            obsTime,
-            temp,
-            feelsLike,
-            text,
-            windDir,
-            windScale,
-            windSpeed,
-            humidity,
-            precip,
-            pressure,
-            vis,
-            cloud,
-            dew,
-          }) => `当前位置：${formatLocation(ad_info)}
-观测时间：${formatTime(obsTime)}
-实时温度：${temp}°C
-体感温度：${feelsLike}°C
-天气状况：${text}
-风向风力：${windDir}，${windScale}级，${windSpeed}公里/小时
-相对湿度：${humidity}%
-小时降水：${precip}毫米
-大气压强：${pressure}百帕
-能  见  度：${vis}公里
-云         量：${cloud}%
-露点温度：${dew}°C`,
+        label={createBinding(weather, "now").as((v) =>
+          v
+            ? `当前位置：${formatLocation(v.location.ad_info)}
+观测时间：${formatTime(v.obsTime)}
+实时温度：${v.temp}°C
+体感温度：${v.feelsLike}°C
+天气状况：${v.text}
+风向风力：${v.windDir}，${v.windScale}级，${v.windSpeed}公里/小时
+相对湿度：${v.humidity}%
+小时降水：${v.precip}毫米
+大气压强：${v.pressure}百帕
+能  见  度：${v.vis}公里
+云         量：${v.cloud}%
+露点温度：${v.dew}°C`
+            : "未获取到天气信息",
         )}
       />
     </popover>

@@ -59,23 +59,7 @@ export default class Weather extends GObject.Object {
     return this.instance;
   }
 
-  #now: Now["now"] = {
-    location: { ip: "", location: { lat: 0, lng: 0 } },
-    fxLink: "",
-    obsTime: "",
-    temp: "",
-    feelsLike: "",
-    icon: "",
-    text: "",
-    wind360: "",
-    windDir: "",
-    windScale: "",
-    windSpeed: "",
-    humidity: "",
-    precip: "",
-    pressure: "",
-    vis: "",
-  };
+  #now: Now["now"] | null = null;
 
   @getter(Object as any)
   get now() {
