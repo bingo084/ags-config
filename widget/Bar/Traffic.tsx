@@ -1,4 +1,5 @@
-import { Variable } from "astal";
+import { createComputed } from "ags";
+import { createPoll } from "ags/time";
 import GTop from "gi://GTop";
 
 const format = (bps: number) => {
@@ -23,50 +24,54 @@ const getIcon = (rx: number, tx: number) => {
 const isValidInterface = (interfaceName: string) =>
   !/^$|lo|veth|tun|tap|docker|br-|meta/.test(interfaceName.toLowerCase());
 
-const traffic = Variable.derive(
+const traffic = createComputed(
   [
-    Variable({
-      in: 0,
-      out: 0,
-      traffic: {
-        icon: "network-idle-symbolic",
-        value: 0,
-        unit: "",
-        visible: false,
-      },
-    }).poll(2000, ({ in: lastIn, out: lastOut }) => {
-      const netlist = GTop.glibtop_get_netlist(new GTop.glibtop_netlist());
-      let totalIn = 0;
-      let totalOut = 0;
-      netlist.filter(isValidInterface).forEach((_interface) => {
-        const netload = new GTop.glibtop_netload();
-        GTop.glibtop_get_netload(netload, _interface);
-        totalIn += netload.bytes_in;
-        totalOut += netload.bytes_out;
-      });
-
-      const diffIn = lastIn === 0 ? 0 : (totalIn - lastIn) / 2;
-      const diffOut = lastOut === 0 ? 0 : (totalOut - lastOut) / 2;
-      const maxBps = Math.max(diffIn, diffOut);
-
-      return {
-        in: totalIn,
-        out: totalOut,
+    createPoll(
+      {
+        in: 0,
+        out: 0,
         traffic: {
-          icon: getIcon(diffIn, diffOut),
-          ...format(maxBps),
-          visible: maxBps >= 102400,
+          icon: "network-idle-symbolic",
+          value: 0,
+          unit: "",
+          visible: false,
         },
-      };
-    }),
+      },
+      2000,
+      ({ in: lastIn, out: lastOut }) => {
+        const netlist = GTop.glibtop_get_netlist(new GTop.glibtop_netlist());
+        let totalIn = 0;
+        let totalOut = 0;
+        netlist.filter(isValidInterface).forEach((_interface) => {
+          const netload = new GTop.glibtop_netload();
+          GTop.glibtop_get_netload(netload, _interface);
+          totalIn += netload.bytes_in;
+          totalOut += netload.bytes_out;
+        });
+
+        const diffIn = lastIn === 0 ? 0 : (totalIn - lastIn) / 2;
+        const diffOut = lastOut === 0 ? 0 : (totalOut - lastOut) / 2;
+        const maxBps = Math.max(diffIn, diffOut);
+
+        return {
+          in: totalIn,
+          out: totalOut,
+          traffic: {
+            icon: getIcon(diffIn, diffOut),
+            ...format(maxBps),
+            visible: maxBps >= 102400,
+          },
+        };
+      },
+    ),
   ],
   ({ traffic }) => traffic,
 );
 
 export default () => (
-  <box cssClasses={["traffic"]} visible={traffic(({ visible }) => visible)}>
-    <image cssClasses={["icon"]} iconName={traffic(({ icon }) => icon)} />
+  <box class="traffic" visible={traffic(({ visible }) => visible)}>
+    <image class="icon" iconName={traffic(({ icon }) => icon)} />
     <label label={traffic(({ value }) => ` ${value}`)} />
-    <label cssClasses={["unit"]} label={traffic(({ unit }) => ` ${unit}`)} />
+    <label class="unit" label={traffic(({ unit }) => ` ${unit}`)} />
   </box>
 );

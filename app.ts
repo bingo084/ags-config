@@ -1,30 +1,33 @@
-import { App } from "astal/gtk4";
+import app from "ags/gtk4/app";
 import style from "./style.scss";
 import Bar from "./widget/Bar";
-import { exec, execAsync, GLib, monitorFile, Variable } from "astal";
+import { monitorFile } from "ags/file";
+import { execAsync, subprocess } from "ags/process";
+import GLib from "gi://GLib";
+import { createBinding, For } from "ags";
+import { Gtk } from "ags/gtk4";
 
-App.add_icons("./asset/icon");
-
-// add icons don't support color symbolic icons, copy them to icon path manually
-const target = `${GLib.get_user_data_dir()}/icons/hicolor/symbolic/apps`;
-const source = `${GLib.get_user_config_dir()}/ags/asset/icon/*-symbolic.svg`;
-exec(["bash", "-c", `mkdir -p ${target} && cp ${source} ${target}`]);
-
-App.start({
+app.start({
   css: style,
+  icons: `${GLib.get_user_config_dir()}/ags/icons`,
   main() {
-    App.get_monitors().forEach(Bar);
+    const monitors = createBinding(app, "monitors");
+    For({
+      each: monitors,
+      cleanup: (win) => (win as Gtk.Window).destroy(),
+      children: (monitor) => Bar(monitor),
+    });
   },
   requestHandler(js, res) {
-    App.eval(js).then(res).catch(res);
+    app.eval(js).then(res).catch(res);
   },
 });
 
-monitorFile(`./style.scss`, () => App.apply_css("./style.scss", true));
+monitorFile(`./style.scss`, () => app.apply_css("./style.scss", true));
 
-Variable("")
-  .watch(["tail", "-n", "0", "-f", `${GLib.get_home_dir()}/.cache/ags/ags.log`])
-  .subscribe((out) => {
+subprocess(
+  ["tail", "-n", "0", "-f", `${GLib.get_home_dir()}/.cache/ags/ags.log`],
+  (out) => {
     const warning = out.includes("Gjs-WARNING");
     const critical = out.includes("Gjs-CRITICAL");
     if (!warning && !critical) return;
@@ -35,8 +38,9 @@ Variable("")
       "-u",
       warning ? "normal" : "critical",
       "-i",
-      `${GLib.get_user_config_dir()}/ags/asset/icon/apps/ags.svg`,
+      `${GLib.get_user_config_dir()}/ags/icons/hicolor/scalable/apps/ags.svg`,
       warning ? "⚠️ GJS Warning" : "❌ GJS Critical",
       out.split(" ").slice(4).join(" "),
     ]).catch((e) => print("notify-send error:", e));
-  });
+  },
+);

@@ -1,4 +1,4 @@
-import { subprocess } from "astal";
+import { subprocess } from "ags/process";
 
 export default () => (
   <button onClicked={() => subprocess("rofi -show")}>

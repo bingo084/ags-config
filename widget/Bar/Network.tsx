@@ -1,5 +1,6 @@
+import { createBinding, createComputed } from "ags";
+import { subprocess } from "ags/process";
 import Network from "gi://AstalNetwork";
-import { bind, subprocess, Variable } from "astal";
 
 const { wifi, wired, primary } = Network.get_default();
 
@@ -11,18 +12,18 @@ const actions: Record<number, () => void> = {
   2: () => subprocess("nm-applet"),
 };
 
-const iconName = Variable.derive(
-  [bind(wifi, "iconName"), bind(wired, "iconName")],
+const iconName = createComputed(
+  [createBinding(wifi, "iconName"), createBinding(wired, "iconName")],
   (wifi, wired) => (primary == Network.Primary.WIRED ? wired : wifi),
 );
 
-const label = Variable.derive(
+const label = createComputed(
   [
-    bind(wifi, "ssid"),
-    bind(wifi, "strength"),
-    bind(wifi, "device"),
-    bind(wifi.device, "bitrate"),
-    bind(wifi, "activeConnection"),
+    createBinding(wifi, "ssid"),
+    createBinding(wifi, "strength"),
+    createBinding(wifi, "device"),
+    createBinding(wifi.device, "bitrate"),
+    createBinding(wifi, "activeConnection"),
   ],
   (ssid, strength, device, bitrate, conn) => `<b>Wi-Fi</b>
   <span color="dimgrey">SSID</span>     ${ssid} ${getIcon(strength)} ${strength}%
@@ -44,10 +45,12 @@ const label = Variable.derive(
 );
 
 export default () => (
-  <menubutton onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
-    <image iconName={iconName()} />
+  <menubutton
+  // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+  >
+    <image pixelSize={14} iconName={iconName} />
     <popover hasArrow={false}>
-      <label useMarkup={true} cssClasses={["nerd-font"]} label={label()} />
+      <label useMarkup={true} class="nerd-font" label={label} />
     </popover>
   </menubutton>
 );

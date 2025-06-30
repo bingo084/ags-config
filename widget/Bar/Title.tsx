@@ -1,14 +1,14 @@
-import Hyprland from "gi://AstalHyprland";
-import { bind } from "astal";
-import Pango from "gi://Pango?version=1.0";
+import { createBinding } from "ags";
+import AstalHyprland from "gi://AstalHyprland";
+import Pango from "gi://Pango";
 
-const hyprland = Hyprland.get_default();
-const focused = bind(hyprland, "focusedClient");
+const hyprland = AstalHyprland.get_default();
+const focused = createBinding(hyprland, "focusedClient");
 
 export default () => (
-  <box cssClasses={["title"]}>
+  <box class="title">
     <label
-      label={focused.as((client) => client?.title || "")}
+      label={focused((client) => client?.title || "")}
       ellipsize={Pango.EllipsizeMode.END}
     />
   </box>

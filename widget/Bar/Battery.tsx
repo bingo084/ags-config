@@ -1,28 +1,29 @@
-import Battery from "gi://AstalBattery";
-import { bind } from "astal/binding";
-import { Variable } from "astal";
+import { createBinding, createComputed } from "ags";
+import AstalBattery from "gi://AstalBattery";
 
-const battery = Battery.get_default();
-const timeToEmpty = bind(battery, "timeToEmpty");
-const timeToFull = bind(battery, "timeToFull");
-const charging = bind(battery, "charging");
-const percentage = bind(battery, "percentage");
+const battery = AstalBattery.get_default();
+const timeToEmpty = createBinding(battery, "timeToEmpty");
+const timeToFull = createBinding(battery, "timeToFull");
+const charging = createBinding(battery, "charging");
+const isPresent = createBinding(battery, "isPresent");
+const icon = createBinding(battery, "batteryIconName");
+const percent = createBinding(battery, "percentage");
 
 const formatTime = (second: number) =>
   `${Math.floor(second / 3600)} h ${Math.floor((second % 3600) / 60)} m`;
-const toolTip = Variable.derive(
+const toolTip = createComputed(
   [timeToEmpty, timeToFull, charging],
   (t1, t2, c) => `Time to ${c ? "full" : "empty"}: ${formatTime(c ? t2 : t1)}`,
 );
 
 export default () => (
-  <menubutton visible={bind(battery, "isPresent")}>
+  <menubutton visible={isPresent}>
     <box>
-      <image iconName={bind(battery, "batteryIconName")} />
-      <label label={percentage.as((p) => ` ${(p * 100).toFixed(0)}%`)} />
+      <image iconName={icon} />
+      <label label={percent((p) => ` ${Math.round(p * 100)}%`)} />
     </box>
     <popover hasArrow={false}>
-      <label label={toolTip()} />
+      <label label={toolTip} />
     </popover>
   </menubutton>
 );

@@ -1,5 +1,6 @@
-import { exec, subprocess, Variable } from "astal";
-import { Gtk } from "astal/gtk4";
+import { createState } from "ags";
+import { Gtk } from "ags/gtk4";
+import { exec, subprocess } from "ags/process";
 
 interface Inhibit {
   pid?: number;
@@ -13,7 +14,7 @@ const create = (what: string) =>
     `systemd-inhibit --what=${what} --who=Ags --why='Manual inhibit ${what}' sleep infinity`,
   );
 
-const inhibit = Variable(refresh());
+const [inhibit, setInhibit] = createState(refresh());
 
 const actions: Record<number, (widget: Gtk.MenuButton) => void> = {
   3: (self) => {
@@ -26,21 +27,18 @@ const actions: Record<number, (widget: Gtk.MenuButton) => void> = {
       create("sleep");
     }
     exec("sleep 0.1");
-    inhibit.set(refresh());
+    setInhibit(refresh());
     self.popup();
   },
 };
 
 export default () => (
   <menubutton
-    onButtonReleased={(self, state) => {
-      actions[state.get_button()]?.(self);
-    }}
+  // onButtonReleased={(self, state) => {
+  //   actions[state.get_button()]?.(self);
+  // }}
   >
-    <image
-      iconName="coffee-symbolic"
-      cssClasses={inhibit(({ what }) => [`${what}`])}
-    />
+    <image iconName="coffee-symbolic" class={inhibit(({ what }) => what)} />
     <popover hasArrow={false}>
       <label label={inhibit(({ what }) => `Inhibit ${what}`)} />
     </popover>

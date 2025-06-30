@@ -1,4 +1,5 @@
-import { GLib, subprocess } from "astal";
+import { subprocess } from "ags/process";
+import GLib from "gi://GLib";
 
 export default () => (
   <button onClicked={() => subprocess("wlogout")}>

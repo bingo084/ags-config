@@ -2,7 +2,7 @@
 
 pkill gjs
 
-ags run --gtk4 >~/.cache/ags/ags.log 2>&1 &
+ags run >~/.cache/ags/ags.log 2>&1 &
 
 if [[ "$1" == "-i" ]]; then
   for i in {1..30}; do

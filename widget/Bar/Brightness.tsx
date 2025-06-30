@@ -1,6 +1,6 @@
+import { Gdk, Gtk } from "ags/gtk4";
 import Brightness from "../../lib/brightness";
-import { bind } from "astal";
-import { Gdk } from "astal/gtk4";
+import { createBinding } from "ags";
 
 const brightness = Brightness.get_default();
 
@@ -24,14 +24,17 @@ const icons = [
 const getIcon = (v: number) => icons[Math.round(v * (icons.length - 1))];
 
 export default (gdkmonitor: Gdk.Monitor) => (
-  <box
-    onScroll={(_, __, dy) => (brightness.screen = brightness.screen - dy / 100)}
-    visible={gdkmonitor.connector === "eDP-1"}
-  >
+  <button visible={gdkmonitor.connector === "eDP-1"}>
+    <Gtk.EventControllerScroll
+      flags={Gtk.EventControllerScrollFlags.VERTICAL}
+      onScroll={(_, __, dy) => {
+        brightness.screen = brightness.screen - dy / 100;
+      }}
+    />
     <label
-      label={bind(brightness, "screen").as(
+      label={createBinding(brightness, "screen").as(
         (v) => `${getIcon(v)}  ${Math.round(v * 100)}%`,
       )}
     />
-  </box>
+  </button>
 );

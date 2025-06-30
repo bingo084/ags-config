@@ -1,5 +1,7 @@
-import GObject, { register, property, GLib } from "astal/gobject";
-import { exec, execAsync, readFile } from "astal";
+import { fetch } from "ags/fetch";
+import { readFile } from "ags/file";
+import GObject, { getter, register } from "ags/gobject";
+import GLib from "gi://GLib";
 
 interface Secret {
   weather_key: string;
@@ -75,7 +77,7 @@ export default class Weather extends GObject.Object {
     vis: "",
   };
 
-  @property(Object)
+  @getter(Object as any)
   get now() {
     return this.#now;
   }
@@ -105,9 +107,9 @@ export default class Weather extends GObject.Object {
     const location = await this.#fetchLocation(tencent_map);
     const { lat, lng } = location.location;
     const url = `https://devapi.qweather.com/v7/weather/now?key=${weather_key}&location=${lng},${lat}`;
-    const res = (await this.#fetch(url)) as Now;
+    const res = await this.#fetchJson<Now>(url);
     res.now.fxLink = res.fxLink;
-    res.now.location = location;
+    res.now.location = await this.#fetchLocation(tencent_map);
     return res;
   }
 
@@ -117,19 +119,18 @@ export default class Weather extends GObject.Object {
   }
 
   async #fetchLocation({ key, secret_key }: Secret["tencent_map"]) {
-    const url = "https://apis.map.qq.com";
     const api = `/ws/location/v1/ip?key=${key}`;
-    const sig = exec([
-      "bash",
-      "-c",
-      `echo -n "${api}${secret_key}" | md5sum | awk '{print $1}'`,
-    ]);
-    const res = await this.#fetch(`${url}${api}&sig=${sig}`);
-    return res.result as Location;
+    const sig = this.#md5(api + secret_key);
+    const url = `https://apis.map.qq.com${api}&sig=${sig}`;
+    const res = await this.#fetchJson<{ result: Location }>(url);
+    return res.result;
   }
 
-  async #fetch(url: string) {
-    const res = await execAsync(`curl --compressed ${url}`);
-    return JSON.parse(res);
+  async #fetchJson<T>(url: string): Promise<T> {
+    return (await fetch(url)).json();
+  }
+
+  #md5(str: string) {
+    return GLib.compute_checksum_for_string(GLib.ChecksumType.MD5, str, -1);
   }
 }

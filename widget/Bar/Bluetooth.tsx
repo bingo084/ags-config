@@ -1,5 +1,6 @@
+import { createBinding } from "ags";
+import { subprocess } from "ags/process";
 import Bluetooth from "gi://AstalBluetooth";
-import { bind, subprocess } from "astal";
 
 const bluetooth = Bluetooth.get_default();
 
@@ -20,17 +21,19 @@ const actions: Record<number, () => void> = {
 };
 
 export default () => (
-  <menubutton onButtonReleased={(_, state) => actions[state.get_button()]?.()}>
+  <menubutton
+  // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+  >
     <image
-      iconName={bind(bluetooth, "isPowered").as(
+      iconName={createBinding(bluetooth, "isPowered").as(
         (b) => `bluetooth-${b ? "active" : "disabled"}-symbolic`,
       )}
     />
     <popover hasArrow={false}>
       <label
         useMarkup={true}
-        cssClasses={["nerd-font"]}
-        label={bind(bluetooth, "devices").as((devices) => {
+        class="nerd-font"
+        label={createBinding(bluetooth, "devices").as((devices) => {
           const maxName = Math.max(
             ...bluetooth.get_devices().map(({ name }) => name.length),
           );

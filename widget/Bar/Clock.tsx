@@ -1,11 +1,11 @@
-import { GLib, Variable } from "astal";
-import { Gtk } from "astal/gtk4";
+import { createComputed, createState } from "ags";
+import { Gtk } from "ags/gtk4";
+import { createPoll } from "ags/time";
+import GLib from "gi://GLib";
 
-const format = Variable("R");
-const dateTime = Variable<GLib.DateTime | null>(null).poll(1000, () =>
-  GLib.DateTime.new_now_local(),
-);
-const dateTimeStr = Variable.derive(
+const [format, setFormat] = createState("R");
+const dateTime = createPoll(null, 1000, () => GLib.DateTime.new_now_local());
+const dateTimeStr = createComputed(
   [dateTime, format],
   (time, format) => time?.format(` %a, %b %d, %${format}`) || "",
 );
@@ -14,16 +14,16 @@ export default () => {
   const calendar = new Gtk.Calendar();
   const actions: Record<number, () => void> = {
     1: () => calendar.select_day(GLib.DateTime.new_now_local()),
-    2: () => format.set(format.get() === "R" ? "T" : "R"),
+    2: () => setFormat(format.get() === "R" ? "T" : "R"),
   };
 
   return (
     <menubutton
-      onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+    // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
     >
       <box>
         <image iconName="x-office-calendar-symbolic" />
-        <label label={dateTimeStr()} />
+        <label label={dateTimeStr} />
       </box>
       <popover hasArrow={false}>{calendar}</popover>
     </menubutton>

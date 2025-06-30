@@ -1,10 +1,8 @@
-import { App, astalify, Gtk } from "astal/gtk4";
+import { execAsync } from "ags/process";
 import Weather, { Location } from "../../lib/weather";
-import { bind, exec } from "astal";
+import { createBinding } from "ags";
 
 const weather = Weather.get_default();
-
-App.add_icons("./asset/icon/weather");
 
 const formatLocation = (ad_info: Location["ad_info"]) => {
   if (!ad_info) return "";
@@ -49,28 +47,32 @@ const transIcon = (icon: string) =>
     "501": "weather-fog-symbolic",
     "2051": "weather-windy-symbolic",
     "2425": "weather-severe-alert-symbolic",
-  })[icon] || icon;
+  })[icon] || `weather-${icon}-symbolic`;
 
 const actions: Record<number, () => void> = {
   1: () => weather.refresh(),
-  2: () => exec(`xdg-open "${weather.now?.fxLink}"`),
+  2: () => execAsync(`xdg-open "${weather.now?.fxLink}"`),
 };
 
 export default () => (
   <menubutton>
     <box
-      onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+      // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
       spacing={8}
     >
       <image
-        iconName={bind(weather, "now").as(({ icon }) => transIcon(icon))}
+        iconName={createBinding(weather, "now").as(({ icon }) =>
+          transIcon(icon),
+        )}
       />
-      <label label={bind(weather, "now").as(({ temp }) => `${temp}°C`)} />
+      <label
+        label={createBinding(weather, "now").as(({ temp }) => `${temp}°C`)}
+      />
     </box>
     <popover hasArrow={false}>
       <label
         useMarkup={true}
-        label={bind(weather, "now").as(
+        label={createBinding(weather, "now").as(
           ({
             location: { ad_info },
             obsTime,
