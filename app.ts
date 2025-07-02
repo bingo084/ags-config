@@ -25,7 +25,7 @@ app.start({
 
 monitorFile(`./style.scss`, () => app.apply_css("./style.scss", true));
 
-subprocess(
+const proc = subprocess(
   ["tail", "-n", "0", "-f", `${GLib.get_home_dir()}/.cache/ags/ags.log`],
   (out) => {
     const warning = out.includes("Gjs-WARNING");
@@ -44,3 +44,4 @@ subprocess(
     ]).catch((e) => print("notify-send error:", e));
   },
 );
+app.connect("shutdown", () => proc.kill());
