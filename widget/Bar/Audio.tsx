@@ -1,6 +1,6 @@
 import { createBinding } from "ags";
 import { Gtk } from "ags/gtk4";
-import { subprocess } from "ags/process";
+import { execAsync } from "ags/process";
 import AstalWp from "gi://AstalWp";
 
 const { defaultSpeaker: speaker } = AstalWp.get_default()!;
@@ -9,7 +9,7 @@ const volume = createBinding(speaker, "volume");
 const desc = createBinding(speaker, "description");
 
 const actions: Record<number, () => void> = {
-  2: () => subprocess("pavucontrol"),
+  2: () => execAsync("pavucontrol"),
   3: () => speaker.set_mute(!speaker.mute),
 };
 

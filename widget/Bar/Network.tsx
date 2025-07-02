@@ -1,5 +1,5 @@
 import { createBinding, createComputed } from "ags";
-import { subprocess } from "ags/process";
+import { execAsync } from "ags/process";
 import Network from "gi://AstalNetwork";
 
 const { wifi, wired, primary } = Network.get_default();
@@ -9,7 +9,7 @@ const getIcon = (v: number) =>
   icons[Math.round((v / 100) * (icons.length - 1))];
 
 const actions: Record<number, () => void> = {
-  2: () => subprocess("nm-applet"),
+  2: () => execAsync("nm-applet"),
 };
 
 const iconName = createComputed(

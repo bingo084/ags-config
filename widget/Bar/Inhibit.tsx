@@ -1,6 +1,6 @@
 import { createState } from "ags";
 import { Gtk } from "ags/gtk4";
-import { exec, subprocess } from "ags/process";
+import { exec } from "ags/process";
 
 interface Inhibit {
   pid?: number;
@@ -10,7 +10,7 @@ interface Inhibit {
 const refresh = () => JSON.parse(exec("./script/inhibit.sh")) as Inhibit;
 const kill = () => exec(`kill ${inhibit.get().pid}`);
 const create = (what: string) =>
-  subprocess(
+  exec(
     `systemd-inhibit --what=${what} --who=Ags --why='Manual inhibit ${what}' sleep infinity`,
   );
 
@@ -26,7 +26,6 @@ const actions: Record<number, (widget: Gtk.MenuButton) => void> = {
     } else {
       create("sleep");
     }
-    exec("sleep 0.1");
     setInhibit(refresh());
     self.popup();
   },

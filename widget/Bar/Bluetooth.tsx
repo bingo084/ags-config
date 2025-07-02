@@ -1,5 +1,5 @@
 import { createBinding } from "ags";
-import { subprocess } from "ags/process";
+import { execAsync } from "ags/process";
 import Bluetooth from "gi://AstalBluetooth";
 
 const bluetooth = Bluetooth.get_default();
@@ -16,7 +16,7 @@ const getIcon = (v: number) =>
   icons[Math.round((v / 100) * (icons.length - 1))];
 
 const actions: Record<number, () => void> = {
-  2: () => subprocess("blueman-manager"),
+  2: () => execAsync("blueman-manager"),
   3: () => bluetooth.toggle(),
 };
 

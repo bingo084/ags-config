@@ -1,6 +1,6 @@
 import { createComputed } from "ags";
 import { Gtk } from "ags/gtk4";
-import { subprocess } from "ags/process";
+import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
 import GTop from "gi://GTop";
 
@@ -70,7 +70,7 @@ const disk = createPoll(
 );
 
 const actions: Record<number, () => void> = {
-  2: () => subprocess("missioncenter"),
+  2: () => execAsync("missioncenter"),
 };
 
 export default () => (

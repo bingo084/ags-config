@@ -1,6 +1,6 @@
 import { createState, With } from "ags";
 import { Gtk } from "ags/gtk4";
-import { execAsync, subprocess } from "ags/process";
+import { execAsync } from "ags/process";
 import { interval } from "ags/time";
 
 interface Updates {
@@ -23,7 +23,7 @@ const level = (v: number, l1: number, l2: number, l3: number) =>
   v < l1 ? "none" : v < l2 ? "updatable" : v < l3 ? "warning" : "critical";
 
 const actions: Record<number, () => void> = {
-  2: () => subprocess("kitty ./script/installupdates.sh"),
+  2: () => execAsync("kitty ./script/installupdates.sh"),
   3: () => refresh(),
 };
 

@@ -1,7 +1,7 @@
-import { subprocess } from "ags/process";
+import { execAsync } from "ags/process";
 
 export default () => (
-  <button onClicked={() => subprocess("rofi -show")}>
+  <button onClicked={() => execAsync("rofi -show")}>
     <image iconName="system-search-symbolic" />
   </button>
 );
