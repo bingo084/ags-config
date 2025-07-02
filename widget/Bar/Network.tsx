@@ -22,14 +22,13 @@ const label = createComputed(
     createBinding(wifi, "ssid"),
     createBinding(wifi, "strength"),
     createBinding(wifi, "device"),
-    createBinding(wifi.device, "bitrate"),
     createBinding(wifi, "activeConnection"),
   ],
-  (ssid, strength, device, bitrate, conn) => `<b>Wi-Fi</b>
+  (ssid, strength, device, conn) => `<b>Wi-Fi</b>
   <span color="dimgrey">SSID</span>     ${ssid} ${getIcon(strength)} ${strength}%
   <span color="dimgrey">MAC</span>      ${device.permHwAddress}
   <span color="dimgrey">Driver</span>   ${device.driver}
-  <span color="dimgrey">Speed</span>    ${bitrate / 1000} Mbps
+  <span color="dimgrey">Speed</span>    ${device.bitrate / 1000} Mbps
 <b>IPv4</b>
   <span color="dimgrey">IP</span>       ${conn?.ip4Config
     ?.get_addresses()
