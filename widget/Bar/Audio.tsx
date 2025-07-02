@@ -27,7 +27,7 @@ export default () => (
         <label label={desc.as((d) => d || "Unknown Device")} />
         <slider
           widthRequest={260}
-          onChangeValue={({ value }) => speaker.set_volume(value)}
+          onChangeValue={(_, __, value) => speaker.set_volume(value)}
           value={volume}
         />
       </box>

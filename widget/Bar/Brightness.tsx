@@ -36,7 +36,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
     <popover hasArrow={false}>
       <slider
         widthRequest={260}
-        onChangeValue={({ value }) => {
+        onChangeValue={(_, __, value) => {
           brightness.screen = value;
         }}
         value={screen}
