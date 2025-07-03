@@ -8,15 +8,11 @@ const icon = createBinding(speaker, "volumeIcon");
 const volume = createBinding(speaker, "volume");
 const desc = createBinding(speaker, "description");
 
-const actions: Record<number, () => void> = {
-  2: () => execAsync("pavucontrol"),
-  3: () => speaker.set_mute(!speaker.mute),
-};
-
 export default () => (
-  <menubutton
-  // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-  // onScroll={(_, __, dy) => speaker.set_volume(speaker.volume - dy / 100)}
+  <emenubutton
+    onMiddleUp={() => execAsync("pavucontrol")}
+    onRightUp={() => speaker.set_mute(!speaker.mute)}
+    onScroll={(dy) => speaker.set_volume(speaker.volume - dy / 100)}
   >
     <box>
       <image iconName={icon} />
@@ -32,5 +28,5 @@ export default () => (
         />
       </box>
     </popover>
-  </menubutton>
+  </emenubutton>
 );
