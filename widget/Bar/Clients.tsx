@@ -2,6 +2,7 @@ import { createBinding, createComputed, For } from "ags";
 import { Gdk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import Hyprland from "gi://AstalHyprland";
+import { MonitorProps } from ".";
 
 const hyprland = Hyprland.get_default();
 const clients = createBinding(hyprland, "clients").as((clients) =>
@@ -34,7 +35,7 @@ const trans = (clazz: string) => iconMap[clazz] ?? clazz;
 
 const fc = createBinding(hyprland, "focusedClient");
 
-export default (gdkmonitor: Gdk.Monitor) => (
+export default ({ gdkmonitor }: MonitorProps) => (
   <box class="clients">
     <For each={clients}>
       {(client) => {

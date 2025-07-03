@@ -1,6 +1,7 @@
 import { createBinding, For } from "ags";
 import { Gdk } from "ags/gtk4";
 import AstalHyprland from "gi://AstalHyprland";
+import { MonitorProps } from ".";
 
 const hyprland = AstalHyprland.get_default();
 const workspaces = createBinding(hyprland, "workspaces").as((wss) =>
@@ -11,7 +12,7 @@ const fw = createBinding(hyprland, "focusedWorkspace");
 const dispatch = (ws: string | number) =>
   hyprland.message(`dispatch workspace ${ws}`);
 
-export default (gdkmonitor: Gdk.Monitor) => (
+export default ({ gdkmonitor }: MonitorProps) => (
   <box
   // onScroll={(_, __, dy) => dispatch(dy)}
   >

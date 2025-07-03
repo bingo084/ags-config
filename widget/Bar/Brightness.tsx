@@ -1,6 +1,7 @@
 import { Gdk, Gtk } from "ags/gtk4";
 import Brightness from "../../lib/brightness";
 import { createBinding } from "ags";
+import { MonitorProps } from ".";
 
 const brightness = Brightness.get_default();
 const screen = createBinding(brightness, "screen");
@@ -24,7 +25,7 @@ const icons = [
 ];
 const getIcon = (v: number) => icons[Math.round(v * (icons.length - 1))];
 
-export default (gdkmonitor: Gdk.Monitor) => (
+export default ({ gdkmonitor }: MonitorProps) => (
   <menubutton visible={gdkmonitor.connector === "eDP-1"}>
     <Gtk.EventControllerScroll
       flags={Gtk.EventControllerScrollFlags.VERTICAL}

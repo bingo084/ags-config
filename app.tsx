@@ -12,11 +12,9 @@ app.start({
   icons: `${GLib.get_user_config_dir()}/ags/icons`,
   main() {
     const monitors = createBinding(app, "monitors");
-    For({
-      each: monitors,
-      cleanup: (win) => (win as Gtk.Window).destroy(),
-      children: (monitor) => Bar(monitor),
-    });
+    <For each={monitors} cleanup={(win) => (win as Gtk.Window).destroy()}>
+      {(monitor) => <Bar gdkmonitor={monitor} />}
+    </For>;
   },
   requestHandler(js, res) {
     app.eval(js).then(res).catch(res);

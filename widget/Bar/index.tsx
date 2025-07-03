@@ -21,7 +21,11 @@ import Workspaces from "./Workspaces";
 
 const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
 
-export default (gdkmonitor: Gdk.Monitor) => (
+export type MonitorProps = {
+  gdkmonitor: Gdk.Monitor;
+};
+
+export default ({ gdkmonitor }: MonitorProps) => (
   <window
     visible
     name="bar"
@@ -34,8 +38,8 @@ export default (gdkmonitor: Gdk.Monitor) => (
       <box $type="start">
         <Power />
         <Search />
-        {Workspaces(gdkmonitor)}
-        {Clients(gdkmonitor)}
+        <Workspaces gdkmonitor={gdkmonitor} />
+        <Clients gdkmonitor={gdkmonitor} />
         <Submap />
         <Title />
       </box>
@@ -48,7 +52,7 @@ export default (gdkmonitor: Gdk.Monitor) => (
         <Bluetooth />
         <Inhibit />
         <Audio />
-        {Brightness(gdkmonitor)}
+        <Brightness gdkmonitor={gdkmonitor} />
         <Battery />
         <Clock />
         <Systray />
