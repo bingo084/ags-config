@@ -23,7 +23,7 @@ const level = (v: number, l1: number, l2: number, l3: number) =>
   v < l1 ? "none" : v < l2 ? "updatable" : v < l3 ? "warning" : "critical";
 
 const actions: Record<number, () => void> = {
-  2: () => execAsync("kitty ./script/installupdates.sh"),
+  2: () => execAsync("kitty ./scripts/installupdates.sh"),
   3: () => refresh(),
 };
 
@@ -36,7 +36,7 @@ const [updates, setUpdates] = createState({
 const spin = () => setClass("spin");
 const refresh = () => {
   spin();
-  execAsync("./script/updates.sh")
+  execAsync("./scripts/updates.sh")
     .then((out) => setUpdates(JSON.parse(out)))
     .finally(() => setClass(""));
 };

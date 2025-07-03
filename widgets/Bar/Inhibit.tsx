@@ -7,7 +7,7 @@ interface Inhibit {
   what: string;
 }
 
-const refresh = () => JSON.parse(exec("./script/inhibit.sh")) as Inhibit;
+const refresh = () => JSON.parse(exec("./scripts/inhibit.sh")) as Inhibit;
 const kill = () => exec(`kill ${inhibit.get().pid}`);
 const create = (what: string) =>
   exec(

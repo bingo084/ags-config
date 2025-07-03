@@ -1,5 +1,5 @@
 import { execAsync } from "ags/process";
-import Weather, { Location } from "../../lib/weather";
+import Weather, { Location } from "../../libs/weather";
 import { createBinding } from "ags";
 
 const weather = Weather.get_default();

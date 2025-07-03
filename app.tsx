@@ -1,12 +1,12 @@
 import app from "ags/gtk4/app";
 import style from "./style.scss";
-import Bar from "./widget/Bar";
+import Bar from "./widgets/Bar";
 import { monitorFile } from "ags/file";
 import { execAsync, subprocess } from "ags/process";
 import GLib from "gi://GLib";
 import { createBinding, For } from "ags";
 import { Gtk } from "ags/gtk4";
-import "./component/menubutton";
+import "./components/menubutton";
 
 app.start({
   css: style,
