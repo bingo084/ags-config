@@ -6,7 +6,7 @@ import { execAsync, subprocess } from "ags/process";
 import GLib from "gi://GLib";
 import { createBinding, For } from "ags";
 import { Gtk } from "ags/gtk4";
-import "./components/menubutton";
+import "./components/emenubutton";
 
 app.start({
   css: style,
