@@ -1,8 +1,7 @@
 import { createState } from "ags";
 import { Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
-import { exec, execAsync, subprocess } from "ags/process";
-import { timeout } from "ags/time";
+import { subprocess } from "ags/process";
 import AstalIO from "gi://AstalIO?version=0.1";
 
 interface Inhibit {

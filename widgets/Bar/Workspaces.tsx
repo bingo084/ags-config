@@ -1,5 +1,4 @@
 import { createBinding, For } from "ags";
-import { Gdk } from "ags/gtk4";
 import AstalHyprland from "gi://AstalHyprland";
 import { MonitorProps } from ".";
 

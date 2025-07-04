@@ -1,4 +1,4 @@
-import { Gdk, Gtk } from "ags/gtk4";
+import { Gtk } from "ags/gtk4";
 import Brightness from "../../libs/brightness";
 import { createBinding } from "ags";
 import { MonitorProps } from ".";
