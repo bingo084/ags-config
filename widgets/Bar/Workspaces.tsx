@@ -9,12 +9,11 @@ const workspaces = createBinding(hyprland, "workspaces").as((wss) =>
 );
 const fw = createBinding(hyprland, "focusedWorkspace");
 
-const dispatch = (ws: string | number) =>
-  hyprland.message(`dispatch workspace ${ws}`);
-
 export default ({ gdkmonitor }: MonitorProps) => (
-  <box
-  // onScroll={(_, __, dy) => dispatch(dy)}
+  <ebox
+    onScroll={(dy) =>
+      hyprland.message(`dispatch workspace ${dy < 0 ? "-1" : "+1"}`)
+    }
   >
     <For each={workspaces}>
       {(ws) => (
@@ -29,5 +28,5 @@ export default ({ gdkmonitor }: MonitorProps) => (
         </button>
       )}
     </For>
-  </box>
+  </ebox>
 );

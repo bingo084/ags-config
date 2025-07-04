@@ -8,6 +8,7 @@ import { createBinding, For } from "ags";
 import { Gtk } from "ags/gtk4";
 import "./components/emenubutton";
 import "./components/ebutton";
+import "./components/ebox";
 
 app.start({
   css: style,
