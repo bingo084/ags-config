@@ -15,7 +15,10 @@ export default () => {
 
   return (
     <emenubutton
-      onLeftUp={() => calendar.select_day(GLib.DateTime.new_now_local())}
+      onLeftUp={(self) => {
+        calendar.select_day(GLib.DateTime.new_now_local());
+        self.popup();
+      }}
       onRightUp={() => setFormat(format.get() === "R" ? "T" : "R")}
     >
       <box>
