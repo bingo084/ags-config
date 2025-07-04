@@ -1,5 +1,4 @@
 import { CCProps } from "ags";
-import GObject from "ags/gobject";
 import { Gtk } from "ags/gtk4";
 import { intrinsicElements } from "ags/gtk4/jsx-runtime";
 
@@ -8,7 +7,6 @@ type EMenuButtonProps = {
   onRightUp?: (self: Gtk.MenuButton) => void;
   onMiddleUp?: (self: Gtk.MenuButton) => void;
   onScroll?: (dy: number) => void;
-  children?: Array<GObject.Object>;
 } & CCProps<Gtk.MenuButton, Partial<Gtk.MenuButton.ConstructorProps>>;
 
 function EMenuButton({
@@ -16,7 +14,6 @@ function EMenuButton({
   onRightUp,
   onMiddleUp,
   onScroll,
-  children,
   ...rest
 }: EMenuButtonProps) {
   return (
@@ -44,9 +41,7 @@ function EMenuButton({
         });
         self.add_controller(click);
       }}
-    >
-      {children}
-    </menubutton>
+    />
   );
 }
 
