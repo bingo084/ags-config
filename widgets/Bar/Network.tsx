@@ -8,10 +8,6 @@ const icons = ["󰢿", "󰢼", "󰢽", "󰢾"];
 const getIcon = (v: number) =>
   icons[Math.round((v / 100) * (icons.length - 1))];
 
-const actions: Record<number, () => void> = {
-  2: () => execAsync("nm-applet"),
-};
-
 const iconName = createComputed(
   [createBinding(wifi, "iconName"), createBinding(wired, "iconName")],
   (wifi, wired) => (primary == Network.Primary.WIRED ? wired : wifi),
@@ -44,12 +40,10 @@ const label = createComputed(
 );
 
 export default () => (
-  <menubutton
-  // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-  >
+  <emenubutton onMiddleUp={() => execAsync("nm-applet")}>
     <image pixelSize={14} iconName={iconName} />
     <popover hasArrow={false}>
       <label useMarkup={true} class="nerd-font" label={label} />
     </popover>
-  </menubutton>
+  </emenubutton>
 );

@@ -15,14 +15,10 @@ const icons = ["󰂃", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "
 const getIcon = (v: number) =>
   icons[Math.round((v / 100) * (icons.length - 1))];
 
-const actions: Record<number, () => void> = {
-  2: () => execAsync("blueman-manager"),
-  3: () => bluetooth.toggle(),
-};
-
 export default () => (
-  <menubutton
-  // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+  <emenubutton
+    onMiddleUp={() => execAsync("blueman-manager")}
+    onRightUp={() => bluetooth.toggle()}
   >
     <image
       iconName={createBinding(bluetooth, "isPowered").as(
@@ -55,5 +51,5 @@ export default () => (
         })}
       />
     </popover>
-  </menubutton>
+  </emenubutton>
 );

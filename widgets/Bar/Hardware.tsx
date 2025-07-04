@@ -69,14 +69,8 @@ const disk = createPoll(
   },
 );
 
-const actions: Record<number, () => void> = {
-  2: () => execAsync("missioncenter"),
-};
-
 export default () => (
-  <menubutton
-  // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-  >
+  <emenubutton onMiddleUp={() => execAsync("missioncenter")}>
     <box spacing={8}>
       <image iconName="preferences-desktop-display-symbolic" />
       <box orientation={Gtk.Orientation.VERTICAL} valign={Gtk.Align.CENTER}>
@@ -118,5 +112,5 @@ export default () => (
         )}
       />
     </popover>
-  </menubutton>
+  </emenubutton>
 );

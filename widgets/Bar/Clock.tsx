@@ -12,20 +12,17 @@ const dateTimeStr = createComputed(
 
 export default () => {
   const calendar = new Gtk.Calendar();
-  const actions: Record<number, () => void> = {
-    1: () => calendar.select_day(GLib.DateTime.new_now_local()),
-    2: () => setFormat(format.get() === "R" ? "T" : "R"),
-  };
 
   return (
-    <menubutton
-    // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
+    <emenubutton
+      onLeftUp={() => calendar.select_day(GLib.DateTime.new_now_local())}
+      onRightUp={() => setFormat(format.get() === "R" ? "T" : "R")}
     >
       <box>
         <image iconName="x-office-calendar-symbolic" />
         <label label={dateTimeStr} />
       </box>
       <popover hasArrow={false}>{calendar}</popover>
-    </menubutton>
+    </emenubutton>
   );
 };

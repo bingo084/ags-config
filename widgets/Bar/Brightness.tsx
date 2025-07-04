@@ -26,13 +26,10 @@ const icons = [
 const getIcon = (v: number) => icons[Math.round(v * (icons.length - 1))];
 
 export default ({ gdkmonitor }: MonitorProps) => (
-  <menubutton visible={gdkmonitor.connector === "eDP-1"}>
-    <Gtk.EventControllerScroll
-      flags={Gtk.EventControllerScrollFlags.VERTICAL}
-      onScroll={(_, __, dy) => {
-        brightness.screen = brightness.screen - dy / 100;
-      }}
-    />
+  <emenubutton
+    visible={gdkmonitor.connector === "eDP-1"}
+    onScroll={(dy) => (brightness.screen = brightness.screen - dy / 100)}
+  >
     <label label={screen((v) => `${getIcon(v)}  ${Math.round(v * 100)}%`)} />
     <popover hasArrow={false}>
       <slider
@@ -43,5 +40,5 @@ export default ({ gdkmonitor }: MonitorProps) => (
         value={screen}
       />
     </popover>
-  </menubutton>
+  </emenubutton>
 );
