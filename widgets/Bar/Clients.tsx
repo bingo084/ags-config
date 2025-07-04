@@ -26,6 +26,7 @@ const iconMap: Record<string, string> = {
   "code-oss": "com.visualstudio.code.oss",
   Electron: "electron34",
   "org.pulseaudio.pavucontrol": "multimedia-volume-control",
+  "blueman-manager": "blueman",
 };
 
 const trans = (clazz: string) => iconMap[clazz] ?? clazz;
