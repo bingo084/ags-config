@@ -49,18 +49,13 @@ const trans = (icon: string = "qweather") =>
     "2425": "weather-severe-alert-symbolic",
   })[icon] || `weather-${icon}-symbolic`;
 
-const actions: Record<number, () => void> = {
-  1: () => weather.refresh(),
-  2: () => execAsync(`xdg-open "${weather.now?.fxLink}"`),
-};
-
 export default () => (
-  <menubutton>
-    <box
-      // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-      spacing={8}
-      visible={createBinding(weather, "now")(Boolean)}
-    >
+  <emenubutton
+    visible={createBinding(weather, "now")(Boolean)}
+    onLeftUp={() => weather.refresh()}
+    onMiddleUp={() => execAsync(`xdg-open "${weather.now?.fxLink}"`)}
+  >
+    <box spacing={8}>
       <image iconName={createBinding(weather, "now")((v) => trans(v?.icon))} />
       <label label={createBinding(weather, "now")((v) => `${v?.temp}°C`)} />
     </box>
@@ -85,5 +80,5 @@ export default () => (
         )}
       />
     </popover>
-  </menubutton>
+  </emenubutton>
 );

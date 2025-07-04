@@ -22,11 +22,6 @@ const important_pkgs = ["linux", "nvidia-open-dkms", "mesa"];
 const level = (v: number, l1: number, l2: number, l3: number) =>
   v < l1 ? "none" : v < l2 ? "updatable" : v < l3 ? "warning" : "critical";
 
-const actions: Record<number, () => void> = {
-  2: () => execAsync("kitty ./scripts/installupdates.sh"),
-  3: () => refresh(),
-};
-
 const [clazz, setClass] = createState("spin");
 const [updates, setUpdates] = createState({
   count: 0,
@@ -69,15 +64,13 @@ const packages = updates((v) =>
 );
 
 export default () => (
-  <menubutton
+  <emenubutton
     cssClasses={["updates"]}
     visible={updates(({ count }) => count > 0)}
+    onMiddleUp={() => execAsync("kitty ./scripts/installupdates.sh")}
+    onRightUp={() => refresh()}
   >
-    <box
-      // onButtonReleased={(_, state) => actions[state.get_button()]?.()}
-      class={updates(({ count }) => level(count, 1, 25, 50))}
-      spacing={8}
-    >
+    <box class={updates(({ count }) => level(count, 1, 25, 50))} spacing={8}>
       <image class={clazz} iconName="emblem-synchronizing-symbolic" />
       <label label={updates(({ count }) => `${count}`)} />
     </box>
@@ -134,5 +127,5 @@ export default () => (
         )}
       </With>
     </popover>
-  </menubutton>
+  </emenubutton>
 );

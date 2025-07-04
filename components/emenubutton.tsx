@@ -1,18 +1,15 @@
-import { FCProps } from "ags";
+import { CCProps } from "ags";
 import GObject from "ags/gobject";
 import { Gtk } from "ags/gtk4";
 import { intrinsicElements } from "ags/gtk4/jsx-runtime";
 
-type EMenuButtonProps = FCProps<
-  Gtk.MenuButton,
-  {
-    onLeftUp?: (self: Gtk.MenuButton) => void;
-    onRightUp?: (self: Gtk.MenuButton) => void;
-    onMiddleUp?: (self: Gtk.MenuButton) => void;
-    onScroll?: (dy: number) => void;
-    children?: Array<GObject.Object>;
-  } & Partial<Gtk.MenuButton.ConstructorProps>
->;
+type EMenuButtonProps = {
+  onLeftUp?: (self: Gtk.MenuButton) => void;
+  onRightUp?: (self: Gtk.MenuButton) => void;
+  onMiddleUp?: (self: Gtk.MenuButton) => void;
+  onScroll?: (dy: number) => void;
+  children?: Array<GObject.Object>;
+} & CCProps<Gtk.MenuButton, Partial<Gtk.MenuButton.ConstructorProps>>;
 
 function EMenuButton({
   onLeftUp,
