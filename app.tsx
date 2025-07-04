@@ -29,8 +29,8 @@ monitorFile(`./style.scss`, () => app.apply_css("./style.scss", true));
 const proc = subprocess(
   ["tail", "-n", "0", "-f", `${GLib.get_home_dir()}/.cache/ags/ags.log`],
   (out) => {
-    const warning = out.includes("Gjs-WARNING");
-    const critical = out.includes("Gjs-CRITICAL");
+    const warning = out.includes("WARNING");
+    const critical = out.includes("CRITICAL");
     if (!warning && !critical) return;
     execAsync([
       "notify-send",
@@ -40,7 +40,7 @@ const proc = subprocess(
       warning ? "normal" : "critical",
       "-i",
       `${GLib.get_user_config_dir()}/ags/icons/hicolor/scalable/apps/ags.svg`,
-      warning ? "⚠️ GJS Warning" : "❌ GJS Critical",
+      `${warning ? "⚠️" : "❌"} ${out.split(" ")[1]}`,
       out.split(" ").slice(4).join(" "),
     ]).catch((e) => print("notify-send error:", e));
   },
