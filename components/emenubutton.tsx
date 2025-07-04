@@ -3,9 +3,9 @@ import { Gtk } from "ags/gtk4";
 import { intrinsicElements } from "ags/gtk4/jsx-runtime";
 
 type EMenuButtonProps = {
-  onLeftUp?: (self: Gtk.MenuButton) => void;
-  onRightUp?: (self: Gtk.MenuButton) => void;
-  onMiddleUp?: (self: Gtk.MenuButton) => void;
+  onLeftUp?: (self: Gtk.MenuButton, x: number, y: number) => void;
+  onRightUp?: (self: Gtk.MenuButton, x: number, y: number) => void;
+  onMiddleUp?: (self: Gtk.MenuButton, x: number, y: number) => void;
   onScroll?: (dy: number) => void;
 } & CCProps<Gtk.MenuButton, Partial<Gtk.MenuButton.ConstructorProps>>;
 
@@ -29,14 +29,14 @@ function EMenuButton({
           button: 0,
           propagationPhase: Gtk.PropagationPhase.CAPTURE,
         });
-        click.connect("released", (gesture) => {
+        click.connect("released", (gesture, _, x, y) => {
           if (onLeftUp) gesture.set_state(Gtk.EventSequenceState.CLAIMED);
           if (gesture.get_current_button() === 1) {
-            onLeftUp?.(self);
+            onLeftUp?.(self, x, y);
           } else if (gesture.get_current_button() === 2) {
-            onMiddleUp?.(self);
+            onMiddleUp?.(self, x, y);
           } else if (gesture.get_current_button() === 3) {
-            onRightUp?.(self);
+            onRightUp?.(self, x, y);
           }
         });
         self.add_controller(click);
