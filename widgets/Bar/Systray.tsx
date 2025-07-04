@@ -11,7 +11,7 @@ export default () => (
   <box>
     <For each={items}>
       {(item) => (
-        <menubutton
+        <emenubutton
           $={(self) => {
             self.insert_action_group("dbusmenu", item.actionGroup);
             item.connect("notify::action-group", () => {
@@ -24,19 +24,11 @@ export default () => (
             item.menuModel,
             Gtk.PopoverMenuFlags.NESTED,
           )}
-          // onButtonReleased={(self, state) => {
-          //   const [_, x, y] = state.get_position();
-          //   const button = state.get_button();
-          //   if (button === 1) {
-          //     self.popdown();
-          //     item.activate(x, y);
-          //   } else if (button === 3) {
-          //     self.popup();
-          //   }
-          // }}
+          onLeftUp={(_, x, y) => item.activate(x, y)}
+          onRightUp={(self) => self.popup()}
         >
           <image gicon={createBinding(item, "gicon")} />
-        </menubutton>
+        </emenubutton>
       )}
     </For>
   </box>
