@@ -16,11 +16,8 @@ const clients = createBinding(hyprland, "clients").as((clients) =>
 
 app.add_icons("./asset/icon/apps");
 
-const addPrefix = (address: string) => `address:0x${address}`;
-const actions: Record<number, (address: string) => void> = {
-  1: (address) => hyprland.dispatch("focuswindow", addPrefix(address)),
-  2: (address) => hyprland.dispatch("closewindow", addPrefix(address)),
-};
+const dispatch = (dispatcher: string, address: string) =>
+  hyprland.dispatch(dispatcher, `address:0x${address}`);
 
 const iconMap: Record<string, string> = {
   Feishu: "bytedance-feishu",
@@ -41,7 +38,7 @@ export default ({ gdkmonitor }: MonitorProps) => (
       {(client) => {
         const { address, initialClass, title, xwayland } = client;
         return (
-          <button
+          <ebutton
             cssClasses={createComputed(
               [fc, createBinding(client, "fullscreen")],
               (c, full) => [
@@ -50,17 +47,15 @@ export default ({ gdkmonitor }: MonitorProps) => (
                 xwayland ? "xwayland" : "",
               ],
             )}
-            onClicked={() => actions[1]?.(address)}
-            // onButtonReleased={(_, state) =>
-            //   actions[state.get_button()]?.(address)
-            // }
+            onLeftUp={() => dispatch("focuswindow", address)}
+            onMiddleUp={() => dispatch("closewindow", address)}
             tooltipText={title}
             visible={createBinding(client, "monitor").as(
               (m) => m?.name === gdkmonitor.connector,
             )}
           >
             <image iconName={trans(initialClass)} />
-          </button>
+          </ebutton>
         );
       }}
     </For>

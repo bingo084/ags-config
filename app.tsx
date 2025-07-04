@@ -7,6 +7,7 @@ import GLib from "gi://GLib";
 import { createBinding, For } from "ags";
 import { Gtk } from "ags/gtk4";
 import "./components/emenubutton";
+import "./components/ebutton";
 
 app.start({
   css: style,
