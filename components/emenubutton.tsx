@@ -6,9 +6,9 @@ import { intrinsicElements } from "ags/gtk4/jsx-runtime";
 type EMenuButtonProps = FCProps<
   Gtk.MenuButton,
   {
-    onLeftUp?: () => void;
-    onRightUp?: () => void;
-    onMiddleUp?: () => void;
+    onLeftUp?: (self: Gtk.MenuButton) => void;
+    onRightUp?: (self: Gtk.MenuButton) => void;
+    onMiddleUp?: (self: Gtk.MenuButton) => void;
     onScroll?: (dy: number) => void;
     children?: Array<GObject.Object>;
   } & Partial<Gtk.MenuButton.ConstructorProps>
@@ -23,25 +23,31 @@ function EMenuButton({
   ...rest
 }: EMenuButtonProps) {
   return (
-    <menubutton {...rest}>
-      <Gtk.EventControllerScroll
-        flags={Gtk.EventControllerScrollFlags.VERTICAL}
-        onScroll={(_, __, dy) => onScroll?.(dy)}
-      />
-      <Gtk.GestureClick
-        button={0}
-        propagationPhase={Gtk.PropagationPhase.CAPTURE}
-        onReleased={(self) => {
-          if (onLeftUp) self.set_state(Gtk.EventSequenceState.CLAIMED);
-          if (self.get_current_button() === 1) {
-            onLeftUp?.();
-          } else if (self.get_current_button() === 2) {
-            onMiddleUp?.();
-          } else if (self.get_current_button() === 3) {
-            onRightUp?.();
+    <menubutton
+      {...rest}
+      $={(self) => {
+        const scroll = new Gtk.EventControllerScroll({
+          flags: Gtk.EventControllerScrollFlags.VERTICAL,
+        });
+        scroll.connect("scroll", (_, __, dy) => onScroll?.(dy));
+        self.add_controller(scroll);
+        const click = new Gtk.GestureClick({
+          button: 0,
+          propagationPhase: Gtk.PropagationPhase.CAPTURE,
+        });
+        click.connect("released", (gesture) => {
+          if (onLeftUp) gesture.set_state(Gtk.EventSequenceState.CLAIMED);
+          if (gesture.get_current_button() === 1) {
+            onLeftUp?.(self);
+          } else if (gesture.get_current_button() === 2) {
+            onMiddleUp?.(self);
+          } else if (gesture.get_current_button() === 3) {
+            onRightUp?.(self);
           }
-        }}
-      />
+        });
+        self.add_controller(click);
+      }}
+    >
       {children}
     </menubutton>
   );
