@@ -52,8 +52,8 @@ const trans = (icon: string = "qweather") =>
 export default () => (
   <emenubutton
     visible={createBinding(weather, "now")(Boolean)}
-    onLeftUp={() => weather.refresh()}
     onMiddleUp={() => execAsync(`xdg-open "${weather.now?.fxLink}"`)}
+    onRightUp={() => weather.refresh()}
   >
     <box spacing={8}>
       <image iconName={createBinding(weather, "now")((v) => trans(v?.icon))} />
