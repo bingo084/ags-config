@@ -57,13 +57,36 @@ popover {
     > :last-child {
       margin-right: 11px;
 
+      menubutton>button {
+        padding: 4px 9px;
+        margin-right: -9px;
+      }
     }
   }
 }
 
-menubutton>button {
-  padding: 4px 9px;
-  margin-right: -9px;
+menubutton {
+  &.focused>button {
+    background-color: bg_color(0.3);
+    box-shadow: 0 2px 8px $shadow_color;
+    color: $theme_color;
+  }
+
+  &.fullscreen>button {
+    box-shadow: inset 0 0 0 2px $theme_color;
+  }
+
+  &.xwayland>button {
+    box-shadow: inset 0 0 0 2px $warning_color;
+  }
+
+  &.hidden>button {
+    opacity: 0.5;
+  }
+
+  &.pinned>button {
+    box-shadow: 0 2px 8px rgba($shadow_color, 0.4);
+  }
 }
 
 button {
@@ -77,20 +100,6 @@ button {
 
   &:active {
     background-color: fg_color(0.1);
-  }
-
-  &.focused {
-    background-color: bg_color(0.3);
-    box-shadow: 0 2px 8px $shadow_color;
-    color: $theme_color;
-  }
-
-  &.fullscreen {
-    box-shadow: inset 0 0 0 2px $theme_color;
-  }
-
-  &.xwayland {
-    box-shadow: inset 0 0 0 2px $warning_color;
   }
 }
 
