@@ -13,8 +13,7 @@ $shadow_color: rgba(0, 0, 0, 0.1);
 $border_radius: 10px;
 $theme_color: rgb(0, 122, 255);
 $success_color: #{"@success_color"};
-$warning_color: rgb(255, 204, 0);
-$warning_color2: #{"@warning_color"};
+$warning_color: #{"@warning_color"};
 $critical_color: #{"@error_color"};
 
 tooltip {
@@ -106,7 +105,7 @@ button {
 
 .warning,
 .sleep {
-  color: $warning_color2;
+  color: $warning_color;
 }
 
 .critical,
@@ -181,7 +180,7 @@ levelbar {
       }
 
       &.warning {
-        background-color: $warning_color2;
+        background-color: $warning_color;
       }
 
       &.critical {
