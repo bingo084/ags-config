@@ -1,4 +1,4 @@
-import { Accessor, createBinding, createComputed, For } from "ags";
+import { Accessor, createBinding, createComputed, createState, For } from "ags";
 import app from "ags/gtk4/app";
 import Hyprland from "gi://AstalHyprland";
 import { MonitorProps } from ".";
@@ -57,11 +57,22 @@ interface IconLabelButtonProps {
   icon?: string | Accessor<string>;
   label?: string | Accessor<string>;
   onClicked?: () => void;
+  menu?: Accessor<Gtk.MenuButton | null>;
 }
 
-function IconLabelButton({ icon, label, onClicked }: IconLabelButtonProps) {
+function IconLabelButton({
+  icon,
+  label,
+  onClicked,
+  menu,
+}: IconLabelButtonProps) {
   return (
-    <button onClicked={onClicked}>
+    <button
+      onClicked={() => {
+        onClicked?.();
+        menu?.get()?.popdown();
+      }}
+    >
       <box spacing={8}>
         <image iconName={icon} />
         <label label={label} />
@@ -83,9 +94,11 @@ export default ({ gdkmonitor }: MonitorProps) => (
         );
         const floating = createBinding(client, "floating");
         const pinned = createBinding(client, "pinned");
+        const [menu, setMenu] = createState<Gtk.MenuButton | null>(null);
 
         return (
           <emenubutton
+            $={(self) => setMenu(self)}
             cssClasses={createComputed(
               [
                 fc,
@@ -120,6 +133,7 @@ export default ({ gdkmonitor }: MonitorProps) => (
                   onClicked={() =>
                     isHidden(client) ? show(client) : hide(client)
                   }
+                  menu={menu}
                 />
                 <IconLabelButton
                   icon={full((f) =>
@@ -132,6 +146,7 @@ export default ({ gdkmonitor }: MonitorProps) => (
                     isHidden(client) ? show(client) : client.focus();
                     hyprland.dispatch("fullscreen", "1");
                   }}
+                  menu={menu}
                 />
                 <IconLabelButton
                   icon={floating((f) =>
@@ -141,6 +156,7 @@ export default ({ gdkmonitor }: MonitorProps) => (
                     f ? "Disable Floating" : "Enable Floating",
                   )}
                   onClicked={() => client.toggle_floating()}
+                  menu={menu}
                 />
                 <IconLabelButton
                   icon="view-pin-symbolic"
@@ -149,11 +165,13 @@ export default ({ gdkmonitor }: MonitorProps) => (
                     dispatch("setfloating", address);
                     dispatch("pin", address);
                   }}
+                  menu={menu}
                 />
                 <IconLabelButton
                   icon="window-close-symbolic"
                   label="Close Window"
                   onClicked={() => client.kill()}
+                  menu={menu}
                 />
               </box>
             </popover>
