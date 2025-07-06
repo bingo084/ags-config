@@ -101,6 +101,12 @@ button {
   &:active {
     background-color: fg_color(0.1);
   }
+
+  &.focused {
+    background-color: bg_color(0.3);
+    box-shadow: 0 2px 8px $shadow_color;
+    color: $theme_color;
+  }
 }
 
 .title {
