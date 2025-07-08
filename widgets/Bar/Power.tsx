@@ -81,33 +81,35 @@ const items = [
   },
 ];
 
-const popover = (
-  <popover hasArrow={false}>
-    <box orientation={Gtk.Orientation.VERTICAL}>
-      {items.map(({ type, icon, label, onClicked }) =>
-        type === "separator" ? (
-          <Gtk.Separator />
-        ) : (
-          <button
-            onClicked={() => {
-              onClicked?.();
-              popover.popdown();
-            }}
-          >
-            <box spacing={8}>
-              <image iconName={icon} />
-              <label label={label} />
-            </box>
-          </button>
-        ),
-      )}
-    </box>
-  </popover>
-) as Gtk.Popover;
+export default () => {
+  const popover = (
+    <popover hasArrow={false}>
+      <box orientation={Gtk.Orientation.VERTICAL}>
+        {items.map(({ type, icon, label, onClicked }) =>
+          type === "separator" ? (
+            <Gtk.Separator />
+          ) : (
+            <button
+              onClicked={() => {
+                onClicked?.();
+                popover.popdown();
+              }}
+            >
+              <box spacing={8}>
+                <image iconName={icon} />
+                <label label={label} />
+              </box>
+            </button>
+          ),
+        )}
+      </box>
+    </popover>
+  ) as Gtk.Popover;
 
-export default () => (
-  <emenubutton>
-    <image iconName={GLib.get_os_info("LOGO") || "missing-symbolic"} />
-    {popover}
-  </emenubutton>
-);
+  return (
+    <emenubutton>
+      <image iconName={GLib.get_os_info("LOGO") || "missing-symbolic"} />
+      {popover}
+    </emenubutton>
+  );
+};
