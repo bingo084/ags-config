@@ -97,26 +97,6 @@ export default ({ gdkmonitor }: MonitorProps) => (
           },
         ];
 
-        const popover = (
-          <popover hasArrow={false}>
-            <box orientation={Gtk.Orientation.VERTICAL}>
-              {items.map(({ icon, label, onClicked }) => (
-                <button
-                  onClicked={() => {
-                    onClicked?.();
-                    popover.popdown();
-                  }}
-                >
-                  <box spacing={8}>
-                    <image iconName={icon} />
-                    <label label={label} />
-                  </box>
-                </button>
-              ))}
-            </box>
-          </popover>
-        ) as Gtk.Popover;
-
         return (
           <emenubutton
             cssClasses={createComputed(
@@ -143,7 +123,7 @@ export default ({ gdkmonitor }: MonitorProps) => (
             )}
           >
             <image iconName={trans(initialClass)} />
-            {popover}
+            <popupmenu items={items} />
           </emenubutton>
         );
       }}

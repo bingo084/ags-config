@@ -9,6 +9,7 @@ import { Gtk } from "ags/gtk4";
 import "./components/emenubutton";
 import "./components/ebutton";
 import "./components/ebox";
+import "./components/popupmenu";
 
 app.start({
   css: style,

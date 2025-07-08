@@ -1,13 +1,13 @@
 import { Gtk } from "ags/gtk4";
-import { execAsync } from "ags/process";
 import GLib from "gi://GLib";
 import { Dialog } from "../../components/dialog";
+import { Item } from "../../components/popupmenu";
 
-const items = [
+const items: Item[] = [
   {
     icon: "system-lock-screen-symbolic",
     label: "Lock",
-    onClicked: () => execAsync(["loginctl", "lock-session"]),
+    onClicked: ["loginctl", "lock-session"],
   },
   {
     type: "separator",
@@ -15,12 +15,12 @@ const items = [
   {
     icon: "weather-clear-night-symbolic",
     label: "Suspend",
-    onClicked: () => execAsync(["systemctl", "suspend"]),
+    onClicked: ["systemctl", "suspend"],
   },
   {
     icon: "drive-harddisk-symbolic",
     label: "Hibernate",
-    onClicked: () => execAsync(["systemctl", "hibernate"]),
+    onClicked: ["systemctl", "hibernate"],
   },
   {
     type: "separator",
@@ -81,35 +81,9 @@ const items = [
   },
 ];
 
-export default () => {
-  const popover = (
-    <popover hasArrow={false}>
-      <box orientation={Gtk.Orientation.VERTICAL}>
-        {items.map(({ type, icon, label, onClicked }) =>
-          type === "separator" ? (
-            <Gtk.Separator />
-          ) : (
-            <button
-              onClicked={() => {
-                onClicked?.();
-                popover.popdown();
-              }}
-            >
-              <box spacing={8}>
-                <image iconName={icon} />
-                <label label={label} />
-              </box>
-            </button>
-          ),
-        )}
-      </box>
-    </popover>
-  ) as Gtk.Popover;
-
-  return (
-    <emenubutton>
-      <image iconName={GLib.get_os_info("LOGO") || "missing-symbolic"} />
-      {popover}
-    </emenubutton>
-  );
-};
+export default () => (
+  <emenubutton>
+    <image iconName={GLib.get_os_info("LOGO") || "missing-symbolic"} />
+    <popupmenu items={items} />
+  </emenubutton>
+);
