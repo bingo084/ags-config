@@ -1,18 +1,13 @@
 import { Gtk } from "ags/gtk4";
 import { execAsync } from "ags/process";
 import GLib from "gi://GLib";
+import { Dialog } from "../../components/dialog";
 
 const items = [
   {
     icon: "system-lock-screen-symbolic",
     label: "Lock",
     onClicked: () => execAsync(["loginctl", "lock-session"]),
-  },
-  {
-    icon: "system-log-out-symbolic",
-    label: "Log Out",
-    onClicked: () =>
-      execAsync(["loginctl", "terminate-user", GLib.get_user_name()]),
   },
   {
     type: "separator",
@@ -31,14 +26,58 @@ const items = [
     type: "separator",
   },
   {
+    icon: "system-log-out-symbolic",
+    label: "Log Out",
+    onClicked: () =>
+      Dialog({
+        title: "Log Out",
+        content: "Are you sure you want to log out?",
+        confirm: {
+          label: "Log Out",
+          class: "danger",
+          action: ["loginctl", "kill-session", GLib.get_user_name()],
+        },
+        timeout: {
+          action: "confirm",
+          seconds: 10,
+        },
+      }),
+  },
+  {
     icon: "system-reboot-symbolic",
     label: "Reboot",
-    onClicked: () => execAsync(["systemctl", "reboot"]),
+    onClicked: () =>
+      Dialog({
+        title: "Reboot",
+        content: "Are you sure you want to reboot?",
+        confirm: {
+          label: "Reboot",
+          class: "danger",
+          action: ["systemctl", "reboot"],
+        },
+        timeout: {
+          action: "confirm",
+          seconds: 10,
+        },
+      }),
   },
   {
     icon: "system-shutdown-symbolic",
     label: "Shutdown",
-    onClicked: () => execAsync(["systemctl", "poweroff"]),
+    onClicked: () =>
+      Dialog({
+        title: "Shutdown",
+        content: "Are you sure you want to shut down?",
+        confirm: {
+          label: "Shutdown",
+          class: "danger",
+          action: ["systemctl", "poweroff"],
+        },
+        timeout: {
+          action: "confirm",
+          seconds: 10,
+        },
+      }),
   },
 ];
 
@@ -51,9 +90,7 @@ const popover = (
         ) : (
           <button
             onClicked={() => {
-              onClicked?.().catch((e) => {
-                "message" in e ? console.error(e.message) : console.error(e);
-              });
+              onClicked?.();
               popover.popdown();
             }}
           >
