@@ -138,7 +138,7 @@ button {
   font-weight: 500;
 
   &:hover {
-    background-color: bg_color(0.2);
+    background-color: fg_color(0.05);
   }
 
   &:active {
