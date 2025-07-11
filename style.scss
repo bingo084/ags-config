@@ -69,6 +69,45 @@ popover {
   }
 }
 
+#dialog {
+  background-color: rgba($shadow_color, 0.11);
+  color: fg_color();
+
+  >box {
+    min-width: 360px;
+    background-color: bg_color();
+    border-radius: $border_radius;
+    padding: 24px;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.09), 0 2px 14px 3px rgba(0, 0, 0, 0.05);
+
+    .title {
+      font-weight: 600;
+      font-size: 1.3em;
+      margin-bottom: 8px;
+    }
+
+    .content {
+      margin-bottom: 16px;
+    }
+
+    button {
+      border-radius: $border_radius;
+      font-weight: 500;
+      box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.09), 0 2px 14px 3px rgba(0, 0, 0, 0.05);
+
+      &.danger {
+        color: $critical_color;
+        font-weight: 700;
+      }
+
+      &.primary {
+        color: $critical_color;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
 menubutton {
   &.focused>button {
     background-color: bg_color(0.3);

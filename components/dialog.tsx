@@ -61,14 +61,22 @@ export function Dialog({ timeout, ...props }: DialogProps) {
           return 0;
         })
       : null;
-    const buildLabelWithTimer = (type: "confirm" | "cancel") => {
+    const button = (type: "confirm" | "cancel") => {
       const config = type === "confirm" ? confirm : cancel;
-      return timeout?.action === type && timer
-        ? timer((t) => `${config.label} (${t})`)
-        : config.label;
+      const label =
+        timeout?.action === type && timer ? timer((t) => ` (${t})`) : "";
+      return (
+        <button onClicked={() => closeWith(config.action)} class={config.class}>
+          <box halign={Gtk.Align.CENTER}>
+            <label label={config.label} />
+            {label && <label widthRequest={25} label={label} />}
+          </box>
+        </button>
+      );
     };
     const dialog = (
       <window
+        name="dialog"
         title={props.title}
         visible
         keymode={Astal.Keymode.EXCLUSIVE}
@@ -79,7 +87,6 @@ export function Dialog({ timeout, ...props }: DialogProps) {
           Astal.WindowAnchor.RIGHT
         }
         application={app}
-        css={"background-color: rgba(0,0,0,0.1);"}
       >
         <Gtk.EventControllerKey
           onKeyPressed={(_, keyval: number) => {
@@ -94,13 +101,6 @@ export function Dialog({ timeout, ...props }: DialogProps) {
           orientation={Gtk.Orientation.VERTICAL}
           valign={Gtk.Align.CENTER}
           halign={Gtk.Align.CENTER}
-          css={`
-            min-width: 300px;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            background-color: @theme_bg_color;
-            border: 1px solid @theme_fg_color;
-          `}
         >
           <label label={props.title} class="title" />
           <label
@@ -110,19 +110,9 @@ export function Dialog({ timeout, ...props }: DialogProps) {
             justify={Gtk.Justification.CENTER}
             class="content"
           />
-          <box>
-            <button
-              hexpand
-              label={buildLabelWithTimer("cancel")}
-              onClicked={() => closeWith(cancel.action)}
-              class={cancel.class}
-            />
-            <button
-              hexpand
-              label={buildLabelWithTimer("confirm")}
-              onClicked={() => closeWith(confirm.action)}
-              class={confirm.class}
-            />
+          <box spacing={10} halign={Gtk.Align.END} homogeneous>
+            {button("cancel")}
+            {button("confirm")}
           </box>
         </box>
       </window>
