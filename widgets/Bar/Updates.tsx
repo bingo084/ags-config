@@ -80,7 +80,7 @@ export default () => (
           <scrolledwindow
             hscrollbarPolicy={Gtk.PolicyType.NEVER}
             vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
-            heightRequest={Math.min(pkgs.length * 24, 900)}
+            heightRequest={Math.min(pkgs.length * 29, 900)}
           >
             <Gtk.Grid
               $={(self) => {
