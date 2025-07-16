@@ -35,7 +35,6 @@ popover {
   }
 
   modelbutton {
-    color: fg_color();
 
     &:hover {
       background-color: rgba($theme_color, 0.7);
@@ -92,7 +91,6 @@ popover {
 
     button {
       border-radius: $border_radius;
-      font-weight: 500;
       box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.09), 0 2px 14px 3px rgba(0, 0, 0, 0.05);
 
       &.danger {
@@ -249,7 +247,6 @@ levelbar {
 }
 
 calendar {
-  color: fg_color();
   padding: 4px 8px 8px;
 
   label {
