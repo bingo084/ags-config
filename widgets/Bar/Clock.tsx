@@ -7,7 +7,7 @@ const [format, setFormat] = createState("R");
 const dateTime = createPoll(null, 1000, () => GLib.DateTime.new_now_local());
 const dateTimeStr = createComputed(
   [dateTime, format],
-  (time, format) => time?.format(` %a, %b %d, %${format}`) || "",
+  (time, format) => time?.format(`%a, %b %d, %${format}`) || "",
 );
 
 export default () => {
@@ -21,7 +21,7 @@ export default () => {
       }}
       onRightUp={() => setFormat(format.get() === "R" ? "T" : "R")}
     >
-      <box>
+      <box spacing={4}>
         <image iconName="x-office-calendar-symbolic" />
         <label label={dateTimeStr} />
       </box>

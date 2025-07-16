@@ -14,9 +14,9 @@ export default () => (
     onRightUp={() => speaker.set_mute(!speaker.mute)}
     onScroll={(dy) => speaker.set_volume(speaker.volume - dy / 100)}
   >
-    <box>
+    <box spacing={4}>
       <image iconName={icon} />
-      <label label={volume((v) => ` ${Math.round(v * 100)}%`)} />
+      <label label={volume((v) => `${Math.round(v * 100)}%`)} />
     </box>
     <popover hasArrow={false}>
       <box orientation={Gtk.Orientation.VERTICAL}>

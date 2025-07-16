@@ -71,7 +71,7 @@ const disk = createPoll(
 
 export default () => (
   <emenubutton onMiddleUp={() => execAsync("missioncenter")}>
-    <box spacing={8}>
+    <box spacing={4}>
       <image iconName="preferences-desktop-display-symbolic" />
       <box orientation={Gtk.Orientation.VERTICAL} valign={Gtk.Align.CENTER}>
         {[

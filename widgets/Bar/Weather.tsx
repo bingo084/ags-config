@@ -55,7 +55,7 @@ export default () => (
     onMiddleUp={() => execAsync(`xdg-open "${weather.now?.fxLink}"`)}
     onRightUp={() => weather.refresh()}
   >
-    <box spacing={8}>
+    <box spacing={4}>
       <image iconName={createBinding(weather, "now")((v) => trans(v?.icon))} />
       <label label={createBinding(weather, "now")((v) => `${v?.temp}°C`)} />
     </box>

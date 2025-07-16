@@ -69,9 +69,9 @@ const traffic = createComputed(
 );
 
 export default () => (
-  <box class="traffic" visible={traffic(({ visible }) => visible)}>
+  <box class="traffic" spacing={4} visible={traffic(({ visible }) => visible)}>
     <image class="icon" iconName={traffic(({ icon }) => icon)} />
-    <label label={traffic(({ value }) => ` ${value}`)} />
-    <label class="unit" label={traffic(({ unit }) => ` ${unit}`)} />
+    <label label={traffic(({ value }) => `${value}`)} />
+    <label class="unit" label={traffic(({ unit }) => unit)} />
   </box>
 );

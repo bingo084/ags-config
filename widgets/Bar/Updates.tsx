@@ -70,7 +70,7 @@ export default () => (
     onMiddleUp={() => execAsync("kitty ./scripts/installupdates.sh")}
     onRightUp={() => refresh()}
   >
-    <box class={updates(({ count }) => level(count, 1, 25, 50))} spacing={8}>
+    <box class={updates(({ count }) => level(count, 1, 25, 50))} spacing={4}>
       <image class={clazz} iconName="emblem-synchronizing-symbolic" />
       <label label={updates(({ count }) => `${count}`)} />
     </box>

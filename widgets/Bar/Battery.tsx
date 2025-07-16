@@ -18,9 +18,9 @@ const toolTip = createComputed(
 
 export default () => (
   <emenubutton visible={isPresent}>
-    <box>
+    <box spacing={4}>
       <image iconName={icon} />
-      <label label={percent((p) => ` ${Math.round(p * 100)}%`)} />
+      <label label={percent((p) => `${Math.round(p * 100)}%`)} />
     </box>
     <popover hasArrow={false}>
       <label label={toolTip} />
