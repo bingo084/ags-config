@@ -30,7 +30,13 @@ export default ({ gdkmonitor }: MonitorProps) => (
     visible={gdkmonitor.connector === "eDP-1"}
     onScroll={(dy) => (brightness.screen = brightness.screen - dy / 100)}
   >
-    <label label={screen((v) => `${getIcon(v)}  ${Math.round(v * 100)}%`)} />
+    <box spacing={6}>
+      <label
+        useMarkup
+        label={screen((v) => `<span size="120%">${getIcon(v)}</span>`)}
+      />
+      <label label={screen((v) => `${Math.round(v * 100)}%`)} />
+    </box>
     <popover hasArrow={false}>
       <slider
         widthRequest={260}
