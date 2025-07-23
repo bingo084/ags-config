@@ -28,10 +28,11 @@ app.start({
 monitorFile(`./style.scss`, () => app.apply_css("./style.scss", true));
 
 const proc = subprocess(
-  ["tail", "-n", "0", "-f", `${GLib.get_home_dir()}/.cache/ags/ags.log`],
+  ["journalctl", "--user-unit", "ags.service", "-n", "0", "-f", "-o", "json"],
   (out) => {
-    const warning = out.includes("WARNING");
-    const critical = out.includes("CRITICAL");
+    const log = JSON.parse(out);
+    const warning = log.PRIORITY === "4";
+    const critical = log.PRIORITY === "3";
     if (!warning && !critical) return;
     execAsync([
       "notify-send",
@@ -41,8 +42,8 @@ const proc = subprocess(
       warning ? "normal" : "critical",
       "-i",
       `${GLib.get_user_config_dir()}/ags/icons/hicolor/scalable/apps/ags.svg`,
-      `${warning ? "⚠️" : "❌"} ${out.split(" ")[1]}`,
-      out.split(" ").slice(4).join(" "),
+      `${warning ? "⚠️ AGS Warning" : "❌ AGS Critical"}`,
+      log.MESSAGE,
     ]).catch((e) => print("notify-send error:", e));
   },
 );
